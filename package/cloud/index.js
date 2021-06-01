@@ -6,6 +6,7 @@ const dotenv = require("dotenv");
 
 const config = new pulumi.Config();
 const names = JSON.parse(config.require("env_files")) || [];
+const SLACK_TOKEN = config.require("SLACK_TOKEN");
 
 const environment = names.reduce(
   (res, path) => ({
@@ -44,7 +45,7 @@ const backend = new aws.lambda.Function(backendPackageName, {
   runtime: "nodejs14.x",
   role: lambdaRole.arn,
   environment: {
-    variables: environment,
+    variables: { ...environment, SLACK_TOKEN },
   },
 });
 
