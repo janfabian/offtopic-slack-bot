@@ -1,0 +1,38 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "dotenv -e ../../config/.backend.env.local.test -e ../../config/.backend.env.test -- node --no-warnings --experimental-vm-modules ../../node_modules/.bin/jest --runInBand",
+    "start:nodemon": "dotenv -e ../../config/.backend.env.local.dev -e ../../config/.backend.env.dev -- nodemon -e js,mjs,cjs server.js"
+  },
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@koa/cors": "^3.1.0",
+    "@koa/router": "^10.0.0",
+    "@slack/events-api": "^3.0.0",
+    "@slack/web-api": "^6.2.3",
+    "http-errors": "^1.8.0",
+    "koa": "^2.13.1",
+    "koa-bodyparser": "^4.3.0",
+    "node-fetch": "^2.6.1",
+    "serverless-http": "^2.7.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.23",
+    "dotenv-cli": "^4.0.0",
+    "eslint": "^7.27.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.23.3",
+    "eslint-plugin-jest": "^24.3.6",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-sonarjs": "^0.7.0",
+    "jest": "^27.0.1",
+    "nodemon": "^2.0.7",
+    "prettier": "^2.3.0",
+    "supertest": "^6.1.3"
+  }
+}
