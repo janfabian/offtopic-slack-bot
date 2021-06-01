@@ -1,3 +1,5 @@
 node_modules
 
 /package/cloud/package.backend*
+
+/config/*.local.*

@@ -15,9 +15,9 @@ const environment = names.reduce(
   {}
 );
 
-const packageName = "offtopic-slack-bot--package-backend";
+const backendPackageName = "offtopic-slack-bot--package-backend";
 
-const serverlessKoaRole = new aws.iam.Role(packageName, {
+const lambdaRole = new aws.iam.Role(backendPackageName, {
   assumeRolePolicy: {
     Version: "2012-10-17",
     Statement: [
@@ -33,22 +33,22 @@ const serverlessKoaRole = new aws.iam.Role(packageName, {
   },
 });
 
-new aws.iam.RolePolicyAttachment(packageName, {
-  role: serverlessKoaRole,
+new aws.iam.RolePolicyAttachment(backendPackageName, {
+  role: lambdaRole,
   policyArn: aws.iam.ManagedPolicies.AWSLambdaExecute,
 });
 
-const backend = new aws.lambda.Function(packageName, {
+const backend = new aws.lambda.Function(backendPackageName, {
   code: new pulumi.asset.FileArchive("./package.backend"),
   handler: "package/backend/serverless.handler",
   runtime: "nodejs14.x",
-  role: serverlessKoaRole.arn,
+  role: lambdaRole.arn,
   environment: {
     variables: environment,
   },
 });
 
-const api = new awsx.apigateway.API(packageName, {
+const api = new awsx.apigateway.API(backendPackageName, {
   routes: [
     {
       path: "/",
