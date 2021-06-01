@@ -7,7 +7,6 @@
     "test": "dotenv -e ../../config/.backend.env.local.test -e ../../config/.backend.env.test -- node --no-warnings --experimental-vm-modules ../../node_modules/.bin/jest --runInBand",
     "start:nodemon": "dotenv -e ../../config/.backend.env.local.dev -e ../../config/.backend.env.dev -- nodemon -e js,mjs,cjs server.js"
   },
-  "type": "module",
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -26,7 +25,6 @@
     "dotenv-cli": "^4.0.0",
     "eslint": "^7.27.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-import": "^2.23.3",
     "eslint-plugin-jest": "^24.3.6",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-sonarjs": "^0.7.0",

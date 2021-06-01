@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cloud:backend": "docker run --rm $(./docker/build.sh) /bin/sh -c 'tar -czf - .' > package/cloud/package.backend.tar.gz",
+    "postcloud:backend": "rm -rf package/cloud/package.backend && tar -xzf package/cloud/package.backend.tar.gz -C package/cloud/ --overwrite --one-top-level"
   },
   "author": "",
   "license": "ISC",
