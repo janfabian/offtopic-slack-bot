@@ -5,8 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "cloud:backend": "docker run --rm $(./docker/build.sh) /bin/sh -c 'tar -czf - .' > package/cloud/package.backend.tar.gz",
-    "postcloud:backend": "rm -rf package/cloud/package.backend && tar -xzf package/cloud/package.backend.tar.gz -C package/cloud/ --overwrite --one-top-level"
+    "precloud:backend": "docker run --rm $(./docker/build.sh) /bin/sh -c 'tar -czf - .' > package/cloud/package.backend.tar.gz",
+    "cloud:backend": "rm -rf package/cloud/package.backend && tar -xzf package/cloud/package.backend.tar.gz -C package/cloud/ --overwrite --one-top-level",
+    "postcloud:backend": "pulumi -C package/cloud/ up -f && rm -rf package/cloud/package.backend package/cloud/package.backend.tar.gz",
+    "docker-compose:development": "docker-compose -p offtopic-slack-bot-development --file ./docker/docker-compose.development.yml --env-file ./config/.backend.env.dev",
+    "docker-compose:test": "docker-compose -p offtopic-slack-bot-test --file ./docker/docker-compose.test.yml --env-file ./config/.backend.env.test"
   },
   "author": "",
   "license": "ISC",

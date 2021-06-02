@@ -13,7 +13,13 @@ module.exports = {
   rules: {},
   overrides: [
     {
-      files: ["**/*.test.js"],
+      files: ["**/*.mjs"],
+      parserOptions: {
+        sourceType: "module",
+      },
+    },
+    {
+      files: ["**/*.test.js", "**/*.test.mjs", "**/*.test.cjs"],
       env: {
         jest: true,
       },

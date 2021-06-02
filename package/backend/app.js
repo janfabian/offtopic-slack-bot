@@ -1,12 +1,13 @@
-import Koa from "koa";
-import cors from "@koa/cors";
-import Router from "@koa/router";
-import bodyParser from "koa-bodyparser";
-import { WebClient } from "@slack/web-api";
+const Koa = require("koa");
+const cors = require("@koa/cors");
+const Router = require("@koa/router");
+const bodyParser = require("koa-bodyparser");
+const { WebClient } = require("@slack/web-api");
 const web = new WebClient(process.env.SLACK_TOKEN);
 
-import fetch from "node-fetch";
-import error from "./middleware/error.js";
+const fetch = require("node-fetch");
+const error = require("./middleware/error.js");
+
 const app = new Koa();
 const publicRouter = new Router();
 
@@ -192,4 +193,4 @@ publicRouter.post("/", async (ctx, next) => {
 app.use(publicRouter.routes());
 app.use(publicRouter.allowedMethods());
 
-export default app;
+module.exports = app;

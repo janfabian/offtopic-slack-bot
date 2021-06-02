@@ -1,6 +1,5 @@
-import { jest } from "@jest/globals";
-import createHttpError from "http-errors";
-import error from "./error";
+const createHttpError = require("http-errors");
+const error = require("./error");
 
 const errorMiddleware = error();
 test("no error", () => {
