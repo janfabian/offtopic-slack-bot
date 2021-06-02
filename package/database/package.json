@@ -1,0 +1,22 @@
+{
+  "name": "database",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "migrations:create": "npx sequelize-cli migration:generate --migrations-path ./migrations/migrations --name",
+    "migrations:up": "dotenv -e ../../config/.backend.env.local.dev -e ../../config/.backend.env.dev -- node ./migrations",
+    "dynamo-gui": "DYNAMO_ENDPOINT=http://0.0.0.0:8000 dynamodb-admin"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "aws-sdk": "^2.919.0",
+    "dotenv": "^8.6.0",
+    "dynamodb-admin": "^4.0.1",
+    "sequelize": "^6.6.2",
+    "sequelize-cli": "^6.2.0",
+    "umzug": "^2.3.0"
+  }
+}
