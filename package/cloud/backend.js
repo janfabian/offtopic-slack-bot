@@ -3,6 +3,7 @@ const pulumi = require("@pulumi/pulumi");
 const aws = require("@pulumi/aws");
 const awsx = require("@pulumi/awsx");
 const dotenv = require("dotenv");
+const { DYNAMODB_TABLE_NAMES } = require("./dynamo");
 
 const config = new pulumi.Config();
 const names = JSON.parse(config.require("env_files")) || [];
@@ -45,7 +46,11 @@ const backend = new aws.lambda.Function(backendPackageName, {
   runtime: "nodejs14.x",
   role: lambdaRole.arn,
   environment: {
-    variables: { ...environment, SLACK_TOKEN },
+    variables: {
+      ...environment,
+      SLACK_TOKEN,
+      ...DYNAMODB_TABLE_NAMES,
+    },
   },
 });
 

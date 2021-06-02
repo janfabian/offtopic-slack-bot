@@ -1,7 +1,7 @@
 const path = require("path");
 const AWS = require("aws-sdk");
 
-const { DynamoStorage, MIGRATION_TABLE_NAME } = require("./DynamoStorage");
+const { DynamoStorage } = require("./DynamoStorage");
 
 AWS.config.update({
   region: "fake-region",
@@ -16,7 +16,6 @@ const documentClient = new AWS.DynamoDB.DocumentClient();
 const dynamodb = new AWS.DynamoDB();
 
 const Umzug = require("umzug");
-const { tableName } = require("../../lib/utils");
 const umzug = new Umzug({
   storage: new DynamoStorage({ documentClient, dynamodb }),
   logger: console,
@@ -29,9 +28,9 @@ const umzug = new Umzug({
 module.exports.umzug = umzug;
 module.exports.init = () => {
   const params = {
-    TableName: tableName(MIGRATION_TABLE_NAME),
-    KeySchema: [{ AttributeName: "id", KeyType: "HASH" }],
-    AttributeDefinitions: [{ AttributeName: "id", AttributeType: "S" }],
+    TableName: process.env.DYNAMODB_TABLE_MIGRATION,
+    KeySchema: [{ AttributeName: "Id", KeyType: "HASH" }],
+    AttributeDefinitions: [{ AttributeName: "Id", AttributeType: "S" }],
     BillingMode: "PAY_PER_REQUEST",
   };
 
