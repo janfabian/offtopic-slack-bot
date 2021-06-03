@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "aws-sdk": "^2.919.0",
+    "aws-sdk": "2.920.0",
     "dotenv": "^8.6.0",
     "dynamodb-admin": "^4.0.1",
     "sequelize": "^6.6.2",
