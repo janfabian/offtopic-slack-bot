@@ -25,7 +25,16 @@ const umzug = new Umzug({
   },
 });
 
+const test = new Umzug({
+  migrations: {
+    path: path.join(__dirname, "./migrations"),
+    params: [documentClient, dynamodb],
+  },
+  storage: "none",
+});
+
 module.exports.umzug = umzug;
+module.exports.testUmzug = test;
 module.exports.init = () => {
   const params = {
     TableName: process.env.DYNAMODB_TABLE_MIGRATIONS,

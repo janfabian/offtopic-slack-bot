@@ -3,11 +3,8 @@ version: "3.8"
 services:
   
   dynamodb:
-    command: "-jar DynamoDBLocal.jar -sharedDb -optimizeDbBeforeStartup -dbPath ./data"
+    command: "-jar DynamoDBLocal.jar -sharedDb -optimizeDbBeforeStartup -dbPath ."
     image: "amazon/dynamodb-local:latest"
-    container_name: dynamodb
     ports:
-      - ${DYNAMODB_PORT}:8000"
-    volumes:
-      - "./docker/dynamodb:/home/dynamodblocal/data"
+      - "${DYNAMODB_PORT}:8000"
     working_dir: /home/dynamodblocal

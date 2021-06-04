@@ -5,7 +5,6 @@ services:
   dynamodb:
     command: "-jar DynamoDBLocal.jar -sharedDb -optimizeDbBeforeStartup -dbPath ./"
     image: "amazon/dynamodb-local:latest"
-    container_name: dynamodb
     ports:
       - "${DYNAMODB_PORT}:8000"
     # ubuntu volume permission issue
