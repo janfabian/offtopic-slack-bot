@@ -2,7 +2,7 @@ const aws = require("@pulumi/aws");
 const pulumi = require("@pulumi/pulumi");
 
 const migrationsTable = new aws.dynamodb.Table(
-  process.env.DYNAMODB_TABLE_MIGRATION,
+  process.env.DYNAMODB_TABLE_MIGRATIONS,
   {
     attributes: [
       {
