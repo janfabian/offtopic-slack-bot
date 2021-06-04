@@ -9,6 +9,7 @@ module.exports = {
   ],
   env: {
     node: true,
+    es6: true,
   },
   rules: {},
   overrides: [
@@ -19,7 +20,7 @@ module.exports = {
       },
     },
     {
-      files: ["**/*.test.js", "**/*.test.mjs", "**/*.test.cjs"],
+      files: ["**/*.test.js", "**/jest.*"],
       env: {
         jest: true,
       },

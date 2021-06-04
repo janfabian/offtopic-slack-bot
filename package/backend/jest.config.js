@@ -2,7 +2,7 @@ module.exports = () => {
   return {
     rootDir: ".",
     // globalSetup: "package/test/jest.setup.cjs",
-    // setupFilesAfterEnv: ["package/test/jest.setupFilesAfterEnv.cjs"],
+    setupFilesAfterEnv: ["../lib/test/jest.setupFilesAfterEnv.cjs"],
     coverageReporters: [
       // "text",
       "text-summary",

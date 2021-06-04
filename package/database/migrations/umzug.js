@@ -1,19 +1,7 @@
 const path = require("path");
-const AWS = require("aws-sdk");
+const { documentClient, dynamodb } = require("../dynamo");
 
 const { DynamoStorage } = require("./DynamoStorage");
-
-AWS.config.update({
-  region: "fake-region",
-  credentials: {
-    accessKeyId: "fake",
-    secretAccessKey: "fake",
-  },
-  endpoint: "http://localhost:" + process.env.DYNAMODB_PORT,
-});
-
-const documentClient = new AWS.DynamoDB.DocumentClient();
-const dynamodb = new AWS.DynamoDB();
 
 const Umzug = require("umzug");
 const umzug = new Umzug({
@@ -25,7 +13,7 @@ const umzug = new Umzug({
   },
 });
 
-const test = new Umzug({
+const testUmzug = new Umzug({
   migrations: {
     path: path.join(__dirname, "./migrations"),
     params: [documentClient, dynamodb],
@@ -34,7 +22,7 @@ const test = new Umzug({
 });
 
 module.exports.umzug = umzug;
-module.exports.testUmzug = test;
+module.exports.testUmzug = testUmzug;
 module.exports.init = () => {
   const params = {
     TableName: process.env.DYNAMODB_TABLE_MIGRATIONS,

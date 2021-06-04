@@ -1,5 +1,4 @@
 const request = require("supertest");
-const { testUmzug } = require("../../database/migrations/umzug.js");
 const app = require("../app.js");
 const { verify, message } = require("./events.test-cases.js");
 
@@ -12,7 +11,6 @@ test("verification", async () => {
 });
 
 test("message", async () => {
-  console.log(await testUmzug.up());
   const response = await request(app.callback()).post("/events").send(message);
   expect(response.status).toBe(200);
 });
