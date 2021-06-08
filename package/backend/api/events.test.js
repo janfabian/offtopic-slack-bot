@@ -1,6 +1,6 @@
 const request = require("supertest");
 const app = require("../app.js");
-const { verify, message } = require("./events.test-cases.js");
+const { verify, message } = require("./events.sample.js");
 
 test("verification", async () => {
   const response = await request(app.callback()).post("/events").send(verify);

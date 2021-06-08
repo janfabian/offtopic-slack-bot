@@ -6,6 +6,7 @@ const bodyParser = require("koa-bodyparser");
 const error = require("./middleware/error.js");
 const EventsRouter = require("./api/events.js");
 const InterRouter = require("./api/interactivity.js");
+const InstallRouter = require("./api/install.js");
 
 const app = new Koa();
 const router = new Router();
@@ -26,6 +27,7 @@ router.get("/", (ctx) => {
 const routes = [
   ["/events", EventsRouter.routes(), EventsRouter.allowedMethods()],
   ["/interactivity", InterRouter.routes(), InterRouter.allowedMethods()],
+  ["/install", InstallRouter.routes(), InstallRouter.allowedMethods()],
 ];
 
 routes.map((r) => router.use(...r));

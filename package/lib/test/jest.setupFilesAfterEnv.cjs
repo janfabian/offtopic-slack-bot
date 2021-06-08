@@ -1,5 +1,6 @@
 const { testUmzug } = require("../../database/migrations/umzug");
 const { dynamodb } = require("../../database/dynamo");
+const nock = require("nock");
 
 jest.setTimeout(10000);
 
@@ -16,4 +17,9 @@ beforeEach(async () => {
   );
 
   return testUmzug.up();
+});
+
+afterEach(() => {
+  nock.cleanAll();
+  nock.enableNetConnect();
 });

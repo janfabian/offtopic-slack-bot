@@ -2,18 +2,31 @@ const Router = require("@koa/router");
 const router = new Router();
 
 const { WebClient } = require("@slack/web-api");
-const { EVENT_TYPES, verifyEndpoint } = require("../lib/event");
+const { CALLBACK_TYPES, verifyEndpoint, EVENT_TYPES } = require("../lib/event");
 const web = new WebClient(process.env.SLACK_TOKEN);
 
 router.post("/", async (ctx, next) => {
   const body = ctx.request.body;
   console.log(body);
   switch (body.type) {
-    case EVENT_TYPES.URL_VERIFICATION: {
+    case CALLBACK_TYPES.URL_VERIFICATION: {
       ctx.body = verifyEndpoint(body);
       break;
     }
-    case EVENT_TYPES.EVENT_CALLBACK: {
+    case CALLBACK_TYPES.EVENT_CALLBACK: {
+      const event = { body };
+      if (event.type === EVENT_TYPES.MESSAGE) {
+        const r = await web.conversations.replies({
+          channel: event.channel,
+          ts: event.thread_ts,
+        });
+
+        const count = r.messages[0].reply_count - 1;
+        const link = await web.chat.getPermalink({
+          channel: event.channel,
+          message_ts: event.ts,
+        });
+      }
       ctx.status = 200;
       break;
     }
@@ -23,18 +36,6 @@ router.post("/", async (ctx, next) => {
   }
 
   return next();
-
-  // const r = await web.conversations.replies({
-  //   channel: event.channel,
-  //   ts: event.thread_ts,
-  //   // limit: 2,
-  // });
-
-  // const count = r.messages[0].reply_count - 1;
-  // const link = await web.chat.getPermalink({
-  //   channel: event.channel,
-  //   message_ts: event.ts,
-  // });
 
   // const channelId = "C022Z4FQCQ2";
   // const ts = "1622110687.002200";
