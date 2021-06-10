@@ -6,4 +6,4 @@ config:
   offtopic-slack-bot:env_files:
     - ../../config/.backend.env.dev
   offtopic-slack-bot:ROUTE53_ZONE_NAME: janfabian.cz
-  offtopic-slack-bot:ROUTE53_DOMAIN: offtopic-slack-bot.dev.janfabian.cz
+  offtopic-slack-bot:ROUTE53_DOMAIN: offtopic-bot.dev.janfabian.cz

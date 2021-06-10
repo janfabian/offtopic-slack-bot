@@ -2,6 +2,12 @@ const fs = require("fs");
 const nock = require("nock");
 const path = require("path");
 
+/**
+ *
+ * @param {string} filename
+ *
+ * example usage `record(__filename)`
+ */
 module.exports.record = (filename) => {
   const parseFileName = path.parse(filename);
   const fileName = path.resolve(

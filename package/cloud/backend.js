@@ -50,6 +50,7 @@ const backend = new aws.lambda.Function(backendPackageName, {
       ...environment,
       SLACK_TOKEN,
       ...DYNAMODB_TABLE_NAMES,
+      NODE_ENV: "production",
     },
   },
 });
