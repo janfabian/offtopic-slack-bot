@@ -1,6 +1,17 @@
 version: "3.8"
 
 services:
+
+  migration:
+    command: "npm run -w database migrations:up"
+    depends_on:
+      - dynamodb
+    build:
+      context: ../
+      dockerfile: ./docker/database.Dockerfile
+    environment: 
+      DYNAMODB_HOST: http://dynamodb
+      DYNAMODB_PORT: ${DYNAMODB_PORT}
   
   dynamodb:
     command: "-jar DynamoDBLocal.jar -sharedDb -optimizeDbBeforeStartup -dbPath ./"

@@ -32,6 +32,8 @@ test("install and save to dynamo", async () => {
     expect.objectContaining({
       botId: expect.any(String),
       accessToken: expect.any(String),
+      createdAt: expect.any(String),
+      updatedAt: expect.any(String),
     })
   );
 });

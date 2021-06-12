@@ -7,7 +7,7 @@ if (process.env.NODE_ENV !== "production") {
       accessKeyId: "fake",
       secretAccessKey: "fake",
     },
-    endpoint: "http://localhost:" + process.env.DYNAMODB_PORT,
+    endpoint: process.env.DYNAMODB_HOST + ":" + process.env.DYNAMODB_PORT,
   });
 }
 

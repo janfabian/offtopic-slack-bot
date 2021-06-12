@@ -2,6 +2,7 @@ const Router = require("@koa/router");
 const { WebClient } = require("@slack/web-api");
 const createHttpError = require("http-errors");
 const { documentClient } = require("../../database/dynamo");
+const { addTimestamps } = require("../../lib/dynamodb");
 const router = new Router();
 const web = new WebClient(process.env.SLACK_TOKEN);
 
@@ -26,11 +27,14 @@ router.get("/", async (ctx, next) => {
   await documentClient
     .put({
       TableName: process.env.DYNAMODB_TABLE_WORKSPACE_INSTALLATIONS,
-      Item: {
-        teamId: r.team.id,
-        botId: r.bot_user_id,
-        accessToken: r.access_token,
-      },
+      Item: addTimestamps(
+        {
+          teamId: r.team.id,
+          botId: r.bot_user_id,
+          accessToken: r.access_token,
+        },
+        true
+      ),
     })
     .promise();
 
