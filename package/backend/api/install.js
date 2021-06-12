@@ -11,11 +11,17 @@ router.get("/", async (ctx, next) => {
     throw createHttpError(422, "Missing code");
   }
 
-  const r = await web.oauth.v2.access({
-    client_id: process.env.SLACK_CLIENT_ID,
-    client_secret: process.env.SLACK_CLIENT_SECRET,
-    code: code,
-  });
+  let r;
+
+  try {
+    r = await web.oauth.v2.access({
+      client_id: process.env.SLACK_CLIENT_ID,
+      client_secret: process.env.SLACK_CLIENT_SECRET,
+      code: code,
+    });
+  } catch (e) {
+    throw createHttpError(401, e.message);
+  }
 
   await documentClient
     .put({

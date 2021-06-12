@@ -35,3 +35,20 @@ test("install and save to dynamo", async () => {
     })
   );
 });
+
+test("install invalid code", async () => {
+  nock.load("./api/nocks/install.02.json");
+
+  const response = await request(app.callback()).get("/install").query({
+    code: "invalid",
+  });
+  expect(response.status).toBe(401);
+
+  const d = await documentClient
+    .scan({
+      TableName: process.env.DYNAMODB_TABLE_WORKSPACE_INSTALLATIONS,
+    })
+    .promise();
+
+  expect(d.Items).toHaveLength(0);
+});
