@@ -6,12 +6,29 @@ const migrationsTable = new aws.dynamodb.Table(
   {
     attributes: [
       {
-        name: "Id",
+        name: "id",
         type: "S",
       },
     ],
     billingMode: "PAY_PER_REQUEST",
-    hashKey: "Id",
+    hashKey: "id",
+    tags: {
+      Environment: pulumi.getStack(),
+    },
+  }
+);
+
+const workspaceInstallationTable = new aws.dynamodb.Table(
+  process.env.DYNAMODB_TABLE_WORKSPACE_INSTALLATIONS,
+  {
+    attributes: [
+      {
+        name: "teamId",
+        type: "S",
+      },
+    ],
+    billingMode: "PAY_PER_REQUEST",
+    hashKey: "teamId",
     tags: {
       Environment: pulumi.getStack(),
     },
@@ -19,6 +36,8 @@ const migrationsTable = new aws.dynamodb.Table(
 );
 
 module.exports.migrationsTable = migrationsTable;
+module.exports.workspaceInstallationTable = workspaceInstallationTable;
 module.exports.DYNAMODB_TABLE_NAMES = {
-  DYNAMODB_MIGRATIONS_TABLE: migrationsTable.name,
+  DYNAMODB_TABLE_MIGRATIONS: migrationsTable.name,
+  DYNAMODB_TABLE_WORKSPACE_INSTALLATIONS: workspaceInstallationTable.name,
 };

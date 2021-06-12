@@ -11,7 +11,7 @@ class DynamoStorage {
     const params = {
       TableName: MIGRATION_TABLE_NAME,
       Item: {
-        Id: name,
+        id: name,
       },
     };
     return this.documentClient.put(params).promise();
@@ -20,7 +20,7 @@ class DynamoStorage {
     const params = {
       TableName: MIGRATION_TABLE_NAME,
       Key: {
-        Id: name,
+        id: name,
       },
     };
     return this.documentClient.delete(params).promise();
@@ -28,14 +28,14 @@ class DynamoStorage {
   executed() {
     const params = {
       TableName: MIGRATION_TABLE_NAME,
-      ProjectionExpression: "Id",
+      ProjectionExpression: "id",
     };
 
     return this.documentClient
       .scan(params)
       .promise()
       .then((r) => {
-        return r.Items.map(({ Id }) => Id);
+        return r.Items.map(({ id }) => id);
       });
   }
 }

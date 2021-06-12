@@ -26,8 +26,8 @@ module.exports.testUmzug = testUmzug;
 module.exports.init = () => {
   const params = {
     TableName: process.env.DYNAMODB_TABLE_MIGRATIONS,
-    KeySchema: [{ AttributeName: "Id", KeyType: "HASH" }],
-    AttributeDefinitions: [{ AttributeName: "Id", AttributeType: "S" }],
+    KeySchema: [{ AttributeName: "id", KeyType: "HASH" }],
+    AttributeDefinitions: [{ AttributeName: "id", AttributeType: "S" }],
     BillingMode: "PAY_PER_REQUEST",
   };
 
