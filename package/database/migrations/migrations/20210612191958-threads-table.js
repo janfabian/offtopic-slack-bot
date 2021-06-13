@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = {
-  up: async (queryInterface, Sequelize) => {},
+  up: async (queryInterface, dynamodb) => {},
 
   down: async (queryInterface, Sequelize) => {},
 };

@@ -10,5 +10,3 @@ module.exports.EVENT_TYPES = {
 module.exports.verifyEndpoint = (body) => {
   return { challenge: body.challenge };
 };
-
-// module.exports.
