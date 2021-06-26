@@ -16,7 +16,7 @@
     "dotenv": "10.0.0",
     "dotenv-cli": "4.0.0",
     "dynamodb-admin": "4.0.1",
-    "sequelize": "6.6.2",
+    "sequelize": "6.6.4",
     "sequelize-cli": "6.2.0",
     "umzug": "2.3.0",
     "jest": "27.0.5"
