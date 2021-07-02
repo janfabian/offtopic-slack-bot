@@ -10,6 +10,7 @@ const {
   viewSubmission,
   TEAM_ID,
 } = require("./interactivity.sample.js");
+const { THREAD_TYPE } = require("../lib/constants");
 
 const API_ENDPOINT = "/interactivity";
 
@@ -41,8 +42,12 @@ test("interactivity message action - offtopic channel already selected", async (
   slackLib.createThread.mockImplementationOnce(() => ({
     offtopic: {
       header: {
-        channel: "mockedResponseChannelId",
-        ts: "mockedResponseTs",
+        channel: "mockedResponseOfftopicChannelId",
+        ts: "mockedResponseHeaderTs",
+      },
+      thread: {
+        channel: "mockedResponseOfftopicChannelId",
+        ts: "mockedResponseThreadTs",
       },
     },
   }));
@@ -53,6 +58,38 @@ test("interactivity message action - offtopic channel already selected", async (
 
   expect(response.status).toBe(200);
   expect(slackLib.createThread.mock.calls[0][2]).toBe(channelId);
+
+  const d = await documentClient
+    .scan({
+      TableName: process.env.DYNAMODB_TABLE_THREADS,
+    })
+    .promise();
+
+  expect(d.Items).toHaveLength(2);
+  expect(d.Items).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        teamId: expect.any(String),
+        messageId: expect.any(String),
+        channelId: expect.any(String),
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
+        threadId: "mockedResponseThreadTs",
+        headerId: "mockedResponseHeaderTs",
+        type: THREAD_TYPE.ORIGINAL_MESSAGE,
+      }),
+      expect.objectContaining({
+        teamId: expect.any(String),
+        messageId: "mockedResponseThreadTs",
+        headerId: "mockedResponseHeaderTs",
+        originalMessageId: expect.any(String),
+        originalMessageChannelId: expect.any(String),
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
+        type: THREAD_TYPE.OFFTOPIC_MESSAGE,
+      }),
+    ])
+  );
 });
 
 test("interactivity view submission - user selected offtopic channel", async () => {

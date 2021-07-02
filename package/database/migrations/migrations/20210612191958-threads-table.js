@@ -2,10 +2,8 @@
 
 module.exports = {
   up: async (queryInterface, dynamodb) => {
-    console.log(this);
-    this.foo = "bar";
     const params = {
-      TableName: process.env.DYNAMODB_TABLE_OFFTOPIC_CHANNELS,
+      TableName: process.env.DYNAMODB_TABLE_THREADS,
       KeySchema: [
         { AttributeName: "teamId", KeyType: "HASH" },
         { AttributeName: "messageId", KeyType: "RANGE" },

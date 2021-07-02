@@ -10,11 +10,13 @@ const {
   PAYLOAD_TYPES,
   CALLBACK_IDS,
   BLOCK_IDS,
+  VIEWS,
 } = require("../lib/interactivity");
 const { createThread } = require("../lib/slack");
 const util = require("util");
 const { record } = require("../../lib/nock");
 const { addTimestamps } = require("../../lib/dynamodb");
+const { THREAD_TYPE } = require("../lib/constants");
 const web = new WebClient(process.env.SLACK_TOKEN);
 
 router.post("/", async (ctx, next) => {
@@ -61,76 +63,86 @@ router.post("/", async (ctx, next) => {
       return;
     }
     case PAYLOAD_TYPES.MESSAGE_ACTION: {
-      const offtopicChannel = await documentClient
+      const offtopicChannelDoc = await documentClient
         .get({
           TableName: process.env.DYNAMODB_TABLE_OFFTOPIC_CHANNELS,
           Key: { teamId: payload.team.id },
         })
         .promise();
 
-      if (!offtopicChannel.Item) {
+      if (!offtopicChannelDoc.Item) {
         try {
-          await web.views.open({
-            trigger_id: payload.trigger_id,
-            view: {
-              type: "modal",
-              callback_id: CALLBACK_IDS.SETUP,
-              title: {
-                type: "plain_text",
-                text: "Offtopic setup",
-                emoji: true,
-              },
-              submit: {
-                type: "plain_text",
-                text: "Submit",
-                emoji: true,
-              },
-              close: {
-                type: "plain_text",
-                text: "Cancel",
-                emoji: true,
-              },
-              blocks: [
-                {
-                  type: "input",
-                  block_id: BLOCK_IDS.CHANNEL_SELECT,
-                  label: {
-                    type: "plain_text",
-                    text: "Select a channel to which will store the offtopic threads",
-                  },
-                  element: {
-                    type: "conversations_select",
-                    placeholder: {
-                      type: "plain_text",
-                      text: "Select conversations",
-                      emoji: true,
-                    },
-                    filter: {
-                      include: ["public"],
-                    },
-                    action_id: "multi_conversations_select-action",
-                  },
-                },
-              ],
-            },
-          });
+          await web.views.open(VIEWS[CALLBACK_IDS.SETUP](payload.trigger_id));
         } catch (error) {
           console.log(error);
         }
         return;
       }
 
-      const {
-        offtopic: { header },
-      } = await createThread(
-        payload.channel.id,
-        payload.message_ts,
-        offtopicChannel.Item.channelId
-      );
+      const offtopicThreadDoc = await documentClient
+        .get({
+          TableName: process.env.DYNAMODB_TABLE_THREADS,
+          Key: { teamId: payload.team.id, messageId: payload.message_ts },
+        })
+        .promise();
+
+      let offtopicChannelId;
+      let offtopicMessageId;
+
+      if (offtopicThreadDoc.Item) {
+        offtopicChannelId = offtopicThreadDoc.Item.headerId;
+        offtopicMessageId = offtopicChannelDoc.Item.channelId;
+      } else {
+        const {
+          offtopic: { header, thread },
+        } = await createThread(
+          payload.channel.id,
+          payload.message_ts,
+          offtopicChannelDoc.Item.channelId
+        );
+
+        await Promise.all([
+          documentClient
+            .put({
+              TableName: process.env.DYNAMODB_TABLE_THREADS,
+              Item: addTimestamps(
+                {
+                  teamId: payload.team.id,
+                  messageId: payload.message_ts,
+                  channelId: payload.channel.id,
+                  threadId: thread.ts,
+                  headerId: header.ts,
+                  type: THREAD_TYPE.ORIGINAL_MESSAGE,
+                },
+                true
+              ),
+            })
+            .promise(),
+          documentClient
+            .put({
+              TableName: process.env.DYNAMODB_TABLE_THREADS,
+              Item: addTimestamps(
+                {
+                  teamId: payload.team.id,
+                  messageId: thread.ts,
+                  originalMessageId: payload.message_ts,
+                  originalMessageChannelId: payload.channel.id,
+                  headerId: header.ts,
+                  type: THREAD_TYPE.OFFTOPIC_MESSAGE,
+                },
+                true
+              ),
+            })
+            .promise(),
+        ]);
+
+        offtopicChannelId = header.channel;
+        offtopicMessageId = header.ts;
+      }
 
       const otlink = await web.chat.getPermalink({
-        channel: header.channel,
-        message_ts: header.ts,
+        channel: offtopicMessageId,
+        message_ts: offtopicChannelId,
       });
 
       await web.chat
