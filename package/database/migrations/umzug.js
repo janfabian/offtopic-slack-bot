@@ -10,6 +10,13 @@ const umzug = new Umzug({
   migrations: {
     path: path.join(__dirname, "./migrations"),
     params: [documentClient, dynamodb],
+    wrap: (fn) => {
+      if (process.env.NODE_ENV === "production" && fn.skipForAWS) {
+        return () => Promise.resolve();
+      }
+
+      return fn;
+    },
   },
 });
 

@@ -19,3 +19,6 @@ module.exports = {
 
   down: async (queryInterface, Sequelize) => {},
 };
+
+module.exports.up.skipForAWS = true;
+module.exports.down.skipForAWS = true;
