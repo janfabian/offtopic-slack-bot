@@ -15,6 +15,7 @@ module.exports = () => {
       "!**/coverage/**",
       "!jest.config.js",
     ],
+    resetMocks: true,
     transform: {},
   };
 };

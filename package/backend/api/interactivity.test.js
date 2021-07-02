@@ -9,6 +9,7 @@ const {
   messageAction,
   viewSubmission,
   TEAM_ID,
+  MESSAGE_TS,
 } = require("./interactivity.sample.js");
 const { THREAD_TYPE } = require("../lib/constants");
 
@@ -90,6 +91,41 @@ test("interactivity message action - offtopic channel already selected", async (
       }),
     ])
   );
+});
+
+test("interactivity message action - offtopic thread already exists", async () => {
+  nock.load("./api/nocks/interactivity.02.json");
+
+  const channelId = "mocked-channelId";
+
+  await documentClient
+    .put({
+      TableName: process.env.DYNAMODB_TABLE_OFFTOPIC_CHANNELS,
+      Item: {
+        teamId: TEAM_ID,
+        channelId: channelId,
+      },
+    })
+    .promise();
+
+  await documentClient
+    .put({
+      TableName: process.env.DYNAMODB_TABLE_THREADS,
+      Item: {
+        teamId: TEAM_ID,
+        messageId: MESSAGE_TS,
+      },
+    })
+    .promise();
+
+  slackLib.createThread.mockImplementationOnce(() => null);
+
+  const response = await request(app.callback())
+    .post(API_ENDPOINT)
+    .send(messageAction);
+
+  expect(response.status).toBe(200);
+  expect(slackLib.createThread.mock.calls).toHaveLength(0);
 });
 
 test("interactivity view submission - user selected offtopic channel", async () => {
