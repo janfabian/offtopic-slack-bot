@@ -1,28 +1,58 @@
 const Router = require("@koa/router");
 const router = new Router();
 
+const R = require("ramda");
 const { WebClient } = require("@slack/web-api");
 const createHttpError = require("http-errors");
 const { default: fetch } = require("node-fetch");
 const { documentClient } = require("../../database/dynamo");
-const { PAYLOAD_TYPES } = require("../lib/interactivity");
+const {
+  PAYLOAD_TYPES,
+  CALLBACK_IDS,
+  BLOCK_IDS,
+} = require("../lib/interactivity");
 const { createThread } = require("../lib/slack");
 const util = require("util");
+const { record } = require("../../lib/nock");
+const { addTimestamps } = require("../../lib/dynamodb");
 const web = new WebClient(process.env.SLACK_TOKEN);
 
 router.post("/", async (ctx, next) => {
   const payload = JSON.parse(ctx.request.body.payload);
-  console.log(ctx.request.body);
-  console.log(util.inspect({ payload }, false, 100, true));
+  // record(__filename);
+  // console.log(ctx.request.body);
+  // console.log(util.inspect({ payload }, false, 100, true));
   ctx.body = "";
   ctx.status = 200;
 
   await next();
-  console.log("type", payload.type);
   switch (payload.type) {
-    case PAYLOAD_TYPES.BLOCK_ACTIONS: {
-      console.log(payload.actions);
+    case PAYLOAD_TYPES.VIEW_SUBMISSION: {
+      const selectedChannel = R.path([
+        "view",
+        "state",
+        "values",
+        BLOCK_IDS.CHANNEL_SELECT,
+        "multi_conversations_select-action",
+        "selected_conversation",
+      ])(payload);
 
+      await documentClient
+        .put({
+          TableName: process.env.DYNAMODB_TABLE_OFFTOPIC_CHANNELS,
+          Item: addTimestamps(
+            {
+              teamId: payload.team.id,
+              channelId: selectedChannel,
+            },
+            true
+          ),
+        })
+        .promise();
+
+      return;
+    }
+    case PAYLOAD_TYPES.BLOCK_ACTIONS: {
       await fetch(payload.response_url, {
         method: "POST",
         body: JSON.stringify({ delete_original: true }),
@@ -38,15 +68,13 @@ router.post("/", async (ctx, next) => {
         })
         .promise();
 
-      console.log("item", offtopicChannel.Item);
-
       if (!offtopicChannel.Item) {
         try {
           await web.views.open({
             trigger_id: payload.trigger_id,
             view: {
               type: "modal",
-              callback_id: "setup",
+              callback_id: CALLBACK_IDS.SETUP,
               title: {
                 type: "plain_text",
                 text: "Offtopic setup",
@@ -65,6 +93,7 @@ router.post("/", async (ctx, next) => {
               blocks: [
                 {
                   type: "input",
+                  block_id: BLOCK_IDS.CHANNEL_SELECT,
                   label: {
                     type: "plain_text",
                     text: "Select a channel to which will store the offtopic threads",
@@ -96,7 +125,7 @@ router.post("/", async (ctx, next) => {
       } = await createThread(
         payload.channel.id,
         payload.message_ts,
-        "C023BNKU9FB"
+        offtopicChannel.Item.channelId
       );
 
       const otlink = await web.chat.getPermalink({
@@ -137,40 +166,6 @@ router.post("/", async (ctx, next) => {
       throw createHttpError(422);
     }
   }
-
-  // const c = await web.conversations.open({
-  //   users: payload.user.id,
-  // });
-
-  // await web.chat.postMessage({
-  //   channel: c.channel.id,
-  //   text: "FOOO",
-  // });
-
-  // const {
-  //   offtopic: { header },
-  // } = await createThread(payload.channel.id, payload.message_ts);
-
-  // const link = await web.chat.getPermalink({
-  //   channel: payload.channel.id,
-  //   message_ts: payload.message_ts,
-  // });
-
-  // const pm = await web.chat.postMessage({
-  //   channel: "C023BNKU9FB",
-  //   text: "offtopic thread",
-  // });
-
-  // const m = await web.chat.postMessage({
-  //   channel: "C023BNKU9FB",
-  //   text: `<${link.permalink}|original message>`,
-  //   thread_ts: pm.ts,
-  // });
-
-  // const otlink = await web.chat.getPermalink({
-  //   channel: header.channel,
-  //   message_ts: header.ts,
-  // });
 
   // await web.chat
   //   .postEphemeral({

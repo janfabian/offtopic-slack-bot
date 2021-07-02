@@ -1,0 +1,125 @@
+[
+  {
+    "scope": "https://slack.com:443",
+    "method": "POST",
+    "path": "/api/views.open",
+    "status": 200,
+    "response": {
+      "ok": true,
+      "view": {
+        "id": "V0273A7PL4C",
+        "team_id": "T022W258HAR",
+        "type": "modal",
+        "blocks": [
+          {
+            "type": "input",
+            "block_id": "channel-select",
+            "label": {
+              "type": "plain_text",
+              "text": "Select a channel to which will store the offtopic threads",
+              "emoji": true
+            },
+            "optional": false,
+            "dispatch_action": false,
+            "element": {
+              "type": "conversations_select",
+              "action_id": "multi_conversations_select-action",
+              "placeholder": {
+                "type": "plain_text",
+                "text": "Select conversations",
+                "emoji": true
+              },
+              "filter": {
+                "include": [
+                  "public"
+                ]
+              }
+            }
+          }
+        ],
+        "private_metadata": "",
+        "callback_id": "setup",
+        "state": {
+          "values": {}
+        },
+        "hash": "1625216839.PCHakyMJ",
+        "title": {
+          "type": "plain_text",
+          "text": "Offtopic setup",
+          "emoji": true
+        },
+        "clear_on_close": false,
+        "notify_on_close": false,
+        "close": {
+          "type": "plain_text",
+          "text": "Cancel",
+          "emoji": true
+        },
+        "submit": {
+          "type": "plain_text",
+          "text": "Submit",
+          "emoji": true
+        },
+        "previous_view_id": null,
+        "root_view_id": "V0273A7PL4C",
+        "app_id": "A022XD0D7LM",
+        "external_id": "",
+        "app_installed_team_id": "T022W258HAR",
+        "bot_id": "B0232PJUUGJ"
+      }
+    },
+    "rawHeaders": [
+      "date",
+      "Fri, 02 Jul 2021 09:07:19 GMT",
+      "server",
+      "Apache",
+      "x-xss-protection",
+      "0",
+      "pragma",
+      "no-cache",
+      "x-oauth-scopes",
+      "channels:history,chat:write,chat:write.customize,commands,im:write,chat:write.public,channels:manage",
+      "cache-control",
+      "private, no-cache, no-store, must-revalidate",
+      "access-control-allow-origin",
+      "*",
+      "x-slack-backend",
+      "r",
+      "access-control-expose-headers",
+      "x-slack-req-id, retry-after",
+      "x-slack-req-id",
+      "2958490b741d489ef5b5c3b9e8b5fd8e",
+      "strict-transport-security",
+      "max-age=31536000; includeSubDomains; preload",
+      "referrer-policy",
+      "no-referrer",
+      "x-content-type-options",
+      "nosniff",
+      "expires",
+      "Mon, 26 Jul 1997 05:00:00 GMT",
+      "vary",
+      "Accept-Encoding",
+      "access-control-allow-headers",
+      "slack-route, x-slack-version-ts, x-b3-traceid, x-b3-spanid, x-b3-parentspanid, x-b3-sampled, x-b3-flags",
+      "content-type",
+      "application/json; charset=utf-8",
+      "x-envoy-upstream-service-time",
+      "72",
+      "x-backend",
+      "main_normal main_canary_with_overflow main_control_with_overflow",
+      "x-server",
+      "slack-www-hhvm-main-iad-z2cj",
+      "x-via",
+      "envoy-www-iad-qqrd, haproxy-edge-fra-f1ri",
+      "x-slack-shared-secret-outcome",
+      "shared-secret",
+      "via",
+      "envoy-www-iad-qqrd",
+      "connection",
+      "close",
+      "transfer-encoding",
+      "chunked"
+    ],
+    "responseIsBinary": false
+  }
+]

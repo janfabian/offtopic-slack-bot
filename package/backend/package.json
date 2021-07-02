@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "dotenv -e ../../config/.backend.env.local.test -e ../../config/.backend.env.test -- node --no-warnings --experimental-vm-modules ../../node_modules/.bin/jest --runInBand --forceExit",
+    "test": "dotenv -e ../../config/.backend.env.local.test -e ../../config/.backend.env.test -- node --no-warnings --experimental-vm-modules ../../node_modules/.bin/jest --runInBand",
     "start:nodemon": "dotenv -e ../../config/.backend.env.local.dev -e ../../config/.backend.env.dev -- nodemon -e js,mjs,cjs server.js"
   },
   "author": "",
