@@ -37,7 +37,7 @@ const workspaceInstallationTable = new aws.dynamodb.Table(
 
 module.exports.migrationsTable = migrationsTable;
 module.exports.workspaceInstallationTable = workspaceInstallationTable;
-module.exports.DYNAMODB_TABLE_NAMES = {
-  DYNAMODB_TABLE_MIGRATIONS: migrationsTable.name,
-  DYNAMODB_TABLE_WORKSPACE_INSTALLATIONS: workspaceInstallationTable.name,
+module.exports.DYNAMODB_TABLES = {
+  DYNAMODB_TABLE_MIGRATIONS: migrationsTable,
+  DYNAMODB_TABLE_WORKSPACE_INSTALLATIONS: workspaceInstallationTable,
 };

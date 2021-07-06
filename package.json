@@ -8,6 +8,7 @@
     "precloud:backend": "docker run --rm $(./docker/build.sh) /bin/sh -c 'tar -czf - .' > package/cloud/package.backend.tar.gz",
     "cloud:backend": "rm -rf package/cloud/package.backend && tar -xzf package/cloud/package.backend.tar.gz -C package/cloud/ --overwrite --one-top-level",
     "postcloud:backend": "pulumi -C package/cloud/ up -f && rm -rf package/cloud/package.backend package/cloud/package.backend.tar.gz",
+    "cloud": "bash ./pulumi/update.sh",
     "docker-compose:development": "docker-compose -p offtopic-slack-bot-development --file ./docker/docker-compose.development.yml --env-file ./config/.backend.env.local.dev",
     "docker-compose:test": "docker-compose -p offtopic-slack-bot-test --file ./docker/docker-compose.test.yml --env-file ./config/.backend.env.local.test"
   },

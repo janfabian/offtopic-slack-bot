@@ -91,7 +91,7 @@ router.post("/", async (ctx, next) => {
 
       if (offtopicThreadDoc.Item) {
         offtopicChannelId = offtopicThreadDoc.Item.headerId;
-        offtopicMessageId = offtopicChannelDoc.Item.channelId;
+        offtopicMessageId = offtopicThreadDoc.Item.channelId;
       } else {
         const {
           offtopic: { header, thread },
@@ -125,6 +125,7 @@ router.post("/", async (ctx, next) => {
                 {
                   teamId: payload.team.id,
                   messageId: thread.ts,
+                  channelId: thread.channel,
                   originalMessageId: payload.message_ts,
                   originalMessageChannelId: payload.channel.id,
                   headerId: header.ts,

@@ -7,7 +7,7 @@ const web = new WebClient(process.env.SLACK_TOKEN);
 
 router.post("/", async (ctx, next) => {
   const body = ctx.request.body;
-  console.log(body);
+  console.log({ body });
   switch (body.type) {
     case CALLBACK_TYPES.URL_VERIFICATION: {
       ctx.body = verifyEndpoint(body);

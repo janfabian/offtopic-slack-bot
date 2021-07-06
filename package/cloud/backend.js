@@ -3,7 +3,7 @@ const pulumi = require("@pulumi/pulumi");
 const aws = require("@pulumi/aws");
 const awsx = require("@pulumi/awsx");
 const dotenv = require("dotenv");
-const { DYNAMODB_TABLE_NAMES } = require("./dynamo");
+const { DYNAMODB_TABLES } = require("./dynamo");
 
 const config = new pulumi.Config();
 const names = JSON.parse(config.require("env_files")) || [];
@@ -35,9 +35,40 @@ const lambdaRole = new aws.iam.Role(backendPackageName, {
   },
 });
 
-new aws.iam.RolePolicyAttachment(backendPackageName, {
+const backendPolicy = new aws.iam.Policy(backendPackageName, {
+  policy: pulumi
+    .all(Object.values(DYNAMODB_TABLES).map((table) => table.arn))
+    .apply(
+      (tableArns) => `{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": [
+          "dynamodb:BatchGetItem",
+          "dynamodb:GetItem",
+          "dynamodb:Query",
+          "dynamodb:Scan",
+          "dynamodb:BatchWriteItem",
+          "dynamodb:PutItem",
+          "dynamodb:UpdateItem"
+        ],
+        "Resource": ${JSON.stringify(tableArns)}
+      }
+    ]
+    }
+`
+    ),
+});
+
+new aws.iam.RolePolicyAttachment(backendPackageName + "-lambdaExecute", {
   role: lambdaRole,
   policyArn: aws.iam.ManagedPolicies.AWSLambdaExecute,
+});
+
+new aws.iam.RolePolicyAttachment(backendPackageName + "-customPolicy", {
+  role: lambdaRole,
+  policyArn: backendPolicy.arn,
 });
 
 const backend = new aws.lambda.Function(backendPackageName, {
@@ -45,11 +76,16 @@ const backend = new aws.lambda.Function(backendPackageName, {
   handler: "package/backend/serverless.handler",
   runtime: "nodejs14.x",
   role: lambdaRole.arn,
+  timeout: 10,
+  memorySize: 128,
   environment: {
     variables: {
       ...environment,
       SLACK_TOKEN,
-      ...DYNAMODB_TABLE_NAMES,
+      ...Object.entries(DYNAMODB_TABLES).reduce(
+        (obj, [key, table]) => ({ ...obj, [key]: table.name }),
+        {}
+      ),
       NODE_ENV: "production",
     },
   },

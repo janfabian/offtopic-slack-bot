@@ -83,6 +83,7 @@ test("interactivity message action - offtopic channel already selected", async (
         teamId: expect.any(String),
         messageId: "mockedResponseThreadTs",
         headerId: "mockedResponseHeaderTs",
+        channelId: "mockedResponseOfftopicChannelId",
         originalMessageId: expect.any(String),
         originalMessageChannelId: expect.any(String),
         createdAt: expect.any(String),
