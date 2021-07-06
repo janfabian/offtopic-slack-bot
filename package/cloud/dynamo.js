@@ -27,6 +27,8 @@ const workspaceInstallationTable = new aws.dynamodb.Table(
         type: "S",
       },
     ],
+    streamEnabled: true,
+    streamViewType: "NEW_IMAGE",
     billingMode: "PAY_PER_REQUEST",
     hashKey: "teamId",
     tags: {

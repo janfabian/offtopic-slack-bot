@@ -9,3 +9,4 @@ names.forEach((path) => dotenv.config({ path }));
 
 module.exports.backend = require("./backend");
 module.exports.dynamo = require("./dynamo");
+module.exports.lambda = require("./lambda");

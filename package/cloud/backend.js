@@ -2,106 +2,23 @@
 const pulumi = require("@pulumi/pulumi");
 const aws = require("@pulumi/aws");
 const awsx = require("@pulumi/awsx");
-const dotenv = require("dotenv");
-const { DYNAMODB_TABLES } = require("./dynamo");
+const { apiBackend } = require("./lambda");
 
 const config = new pulumi.Config();
-const names = JSON.parse(config.require("env_files")) || [];
-const SLACK_TOKEN = config.require("SLACK_TOKEN");
-
-const environment = names.reduce(
-  (res, path) => ({
-    ...res,
-    ...dotenv.config({ path }).parsed,
-  }),
-  {}
-);
 
 const backendPackageName = "offtopic-slack-bot--package-backend";
-
-const lambdaRole = new aws.iam.Role(backendPackageName, {
-  assumeRolePolicy: {
-    Version: "2012-10-17",
-    Statement: [
-      {
-        Action: "sts:AssumeRole",
-        Principal: {
-          Service: "lambda.amazonaws.com",
-        },
-        Effect: "Allow",
-        Sid: "",
-      },
-    ],
-  },
-});
-
-const backendPolicy = new aws.iam.Policy(backendPackageName, {
-  policy: pulumi
-    .all(Object.values(DYNAMODB_TABLES).map((table) => table.arn))
-    .apply(
-      (tableArns) => `{
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Effect": "Allow",
-        "Action": [
-          "dynamodb:BatchGetItem",
-          "dynamodb:GetItem",
-          "dynamodb:Query",
-          "dynamodb:Scan",
-          "dynamodb:BatchWriteItem",
-          "dynamodb:PutItem",
-          "dynamodb:UpdateItem"
-        ],
-        "Resource": ${JSON.stringify(tableArns)}
-      }
-    ]
-    }
-`
-    ),
-});
-
-new aws.iam.RolePolicyAttachment(backendPackageName + "-lambdaExecute", {
-  role: lambdaRole,
-  policyArn: aws.iam.ManagedPolicies.AWSLambdaExecute,
-});
-
-new aws.iam.RolePolicyAttachment(backendPackageName + "-customPolicy", {
-  role: lambdaRole,
-  policyArn: backendPolicy.arn,
-});
-
-const backend = new aws.lambda.Function(backendPackageName, {
-  code: new pulumi.asset.FileArchive("./package.backend"),
-  handler: "package/backend/serverless.handler",
-  runtime: "nodejs14.x",
-  role: lambdaRole.arn,
-  timeout: 10,
-  memorySize: 128,
-  environment: {
-    variables: {
-      ...environment,
-      SLACK_TOKEN,
-      ...Object.entries(DYNAMODB_TABLES).reduce(
-        (obj, [key, table]) => ({ ...obj, [key]: table.name }),
-        {}
-      ),
-      NODE_ENV: "production",
-    },
-  },
-});
 
 const api = new awsx.apigateway.API(backendPackageName, {
   routes: [
     {
       path: "/",
       method: "ANY",
-      eventHandler: backend,
+      eventHandler: apiBackend,
     },
     {
       path: "/{proxy+}",
       method: "ANY",
-      eventHandler: backend,
+      eventHandler: apiBackend,
     },
   ],
 });

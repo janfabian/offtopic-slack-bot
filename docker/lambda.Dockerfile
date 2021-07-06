@@ -7,7 +7,7 @@ COPY package/lib/package.json ./package/lib/package.json
 COPY package/database/package.json ./package/database/package.json
 COPY .npmrc ./
 
-RUN npm ci
+RUN npm ci --only=production
 
 COPY package/lambda ./package/lambda/
 COPY package/lib ./package/lib/
