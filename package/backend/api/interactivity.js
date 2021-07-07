@@ -59,10 +59,15 @@ router.post("/", async (ctx, next) => {
         return;
       }
 
+      const threadOrMessageId = payload.message.thread_ts || payload.message_ts;
+
       const offtopicThreadDoc = await documentClient
         .get({
           TableName: process.env.DYNAMODB_TABLE_THREADS,
-          Key: { teamId: payload.team.id, messageId: payload.message_ts },
+          Key: {
+            teamId: payload.team.id,
+            messageId: threadOrMessageId,
+          },
         })
         .promise();
 
@@ -78,7 +83,7 @@ router.post("/", async (ctx, next) => {
         } = await createThread(
           web,
           payload.channel.id,
-          payload.message_ts,
+          threadOrMessageId,
           offtopicChannelDoc.Item.channelId
         );
 
@@ -89,7 +94,7 @@ router.post("/", async (ctx, next) => {
               Item: addTimestamps(
                 {
                   teamId: payload.team.id,
-                  messageId: payload.message_ts,
+                  messageId: threadOrMessageId,
                   channelId: payload.channel.id,
                   threadId: thread.ts,
                   headerId: header.ts,
@@ -108,7 +113,7 @@ router.post("/", async (ctx, next) => {
                   teamId: payload.team.id,
                   messageId: thread.ts,
                   channelId: thread.channel,
-                  originalMessageId: payload.message_ts,
+                  originalMessageId: threadOrMessageId,
                   originalMessageChannelId: payload.channel.id,
                   headerId: header.ts,
                   type: THREAD_TYPE.OFFTOPIC_MESSAGE,
