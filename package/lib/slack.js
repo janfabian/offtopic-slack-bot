@@ -1,5 +1,4 @@
 const { WebClient } = require("@slack/web-api");
-const web = new WebClient(process.env.SLACK_TOKEN);
 
 module.exports.DEFAULT_APP_CONVERSATION_NAME = "offtopic-app-thread-storage";
 
@@ -8,6 +7,7 @@ module.exports.getClient = (token = process.env.SLACK_TOKEN) => {
     logLevel: process.env.NODE_ENV === "test" ? "error" : "warn",
   });
 };
+
 module.exports.findConversation = async (
   client = module.exports.getClient(),
   comparator = () => true,
@@ -26,21 +26,22 @@ module.exports.findConversation = async (
 };
 
 module.exports.createThread = async (
+  client = module.exports.getClient(),
   channelId,
   messageTs,
   offtopicChannelId
 ) => {
-  const link = await web.chat.getPermalink({
+  const link = await client.chat.getPermalink({
     channel: channelId,
     message_ts: messageTs,
   });
 
-  const thread = await web.chat.postMessage({
+  const thread = await client.chat.postMessage({
     channel: offtopicChannelId,
     text: "offtopic thread",
   });
 
-  const header = await web.chat.postMessage({
+  const header = await client.chat.postMessage({
     channel: offtopicChannelId,
     text: `<${link.permalink}|original message>`,
     thread_ts: thread.ts,

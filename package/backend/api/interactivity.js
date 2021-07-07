@@ -1,23 +1,14 @@
 const Router = require("@koa/router");
 const router = new Router();
 
-const R = require("ramda");
-const { WebClient } = require("@slack/web-api");
 const createHttpError = require("http-errors");
-const { default: fetch } = require("node-fetch");
 const { documentClient } = require("../../database/dynamo");
-const {
-  PAYLOAD_TYPES,
-  CALLBACK_IDS,
-  BLOCK_IDS,
-  VIEWS,
-} = require("../lib/interactivity");
+const { PAYLOAD_TYPES, CALLBACK_IDS, VIEWS } = require("../lib/interactivity");
 const util = require("util");
 const { record } = require("../../lib/nock");
 const { addTimestamps } = require("../../lib/dynamodb");
-const { THREAD_TYPE } = require("../lib/constants");
-const { createThread } = require("../../lib/slack");
-const web = new WebClient(process.env.SLACK_TOKEN);
+const { THREAD_TYPE } = require("../../lib/constants");
+const { createThread, getClient } = require("../../lib/slack");
 
 router.post("/", async (ctx, next) => {
   const payload = JSON.parse(ctx.request.body.payload);
@@ -30,39 +21,21 @@ router.post("/", async (ctx, next) => {
   await next();
   switch (payload.type) {
     case PAYLOAD_TYPES.VIEW_SUBMISSION: {
-      const selectedChannel = R.path([
-        "view",
-        "state",
-        "values",
-        BLOCK_IDS.CHANNEL_SELECT,
-        "multi_conversations_select-action",
-        "selected_conversation",
-      ])(payload);
-
-      await documentClient
-        .put({
-          TableName: process.env.DYNAMODB_TABLE_OFFTOPIC_CHANNELS,
-          Item: addTimestamps(
-            {
-              teamId: payload.team.id,
-              channelId: selectedChannel,
-            },
-            true
-          ),
-        })
-        .promise();
-
       return;
     }
     case PAYLOAD_TYPES.BLOCK_ACTIONS: {
-      await fetch(payload.response_url, {
-        method: "POST",
-        body: JSON.stringify({ delete_original: true }),
-      }).catch((e) => console.error(e));
-
       return;
     }
     case PAYLOAD_TYPES.MESSAGE_ACTION: {
+      const installationDoc = await documentClient
+        .get({
+          TableName: process.env.DYNAMODB_TABLE_WORKSPACE_INSTALLATIONS,
+          Key: { teamId: payload.team.id },
+        })
+        .promise();
+
+      const web = getClient(installationDoc.Item.accessToken);
+
       const offtopicChannelDoc = await documentClient
         .get({
           TableName: process.env.DYNAMODB_TABLE_OFFTOPIC_CHANNELS,
@@ -96,6 +69,7 @@ router.post("/", async (ctx, next) => {
         const {
           offtopic: { header, thread },
         } = await createThread(
+          web,
           payload.channel.id,
           payload.message_ts,
           offtopicChannelDoc.Item.channelId
@@ -179,33 +153,6 @@ router.post("/", async (ctx, next) => {
       throw createHttpError(422);
     }
   }
-
-  // await web.chat
-  //   .postEphemeral({
-  //     channel: payload.channel.id,
-  //     user: payload.user.id,
-  //     // thread_ts: payload.message_ts,
-  //     text: `Reply in the <${otlink.permalink}|offtopic message>`,
-  //     blocks: [
-  //       {
-  //         type: "section",
-  //         text: {
-  //           type: "mrkdwn",
-  //           text: `Reply in the <${otlink.permalink}|offtopic message>`,
-  //         },
-  //         accessory: {
-  //           type: "button",
-  //           text: {
-  //             type: "plain_text",
-  //             text: "Hide",
-  //           },
-  //           value: "follow",
-  //           action_id: "button-action",
-  //         },
-  //       },
-  //     ],
-  //   })
-  //   .catch((e) => console.error(e));
 });
 
 module.exports = router;
