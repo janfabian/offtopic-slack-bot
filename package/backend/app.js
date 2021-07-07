@@ -7,6 +7,7 @@ const error = require("./middleware/error.js");
 const EventsRouter = require("./api/events.js");
 const InterRouter = require("./api/interactivity.js");
 const InstallRouter = require("./api/install.js");
+const logger = require("./middleware/logger.js");
 
 const app = new Koa();
 const router = new Router();
@@ -19,6 +20,7 @@ app.use(
 
 app.use(error());
 app.use(bodyParser());
+app.use(logger());
 
 router.get("/", (ctx) => {
   ctx.status = 200;

@@ -9,6 +9,8 @@ const { record } = require("../../lib/nock");
 const { addTimestamps } = require("../../lib/dynamodb");
 const { THREAD_TYPE } = require("../../lib/constants");
 const { createThread, getClient } = require("../../lib/slack");
+const { logger } = require("../../lib/logger");
+const { default: fetch } = require("node-fetch");
 
 router.post("/", async (ctx, next) => {
   const payload = JSON.parse(ctx.request.body.payload);
@@ -24,6 +26,11 @@ router.post("/", async (ctx, next) => {
       return;
     }
     case PAYLOAD_TYPES.BLOCK_ACTIONS: {
+      await fetch(payload.response_url, {
+        method: "POST",
+        body: JSON.stringify({ delete_original: true }),
+      }).catch((e) => console.error(e));
+
       return;
     }
     case PAYLOAD_TYPES.MESSAGE_ACTION: {
@@ -63,8 +70,8 @@ router.post("/", async (ctx, next) => {
       let offtopicMessageId;
 
       if (offtopicThreadDoc.Item) {
-        offtopicChannelId = offtopicThreadDoc.Item.headerId;
-        offtopicMessageId = offtopicThreadDoc.Item.channelId;
+        offtopicChannelId = offtopicThreadDoc.Item.threadChannelId;
+        offtopicMessageId = offtopicThreadDoc.Item.headerId;
       } else {
         const {
           offtopic: { header, thread },
@@ -86,6 +93,7 @@ router.post("/", async (ctx, next) => {
                   channelId: payload.channel.id,
                   threadId: thread.ts,
                   headerId: header.ts,
+                  threadChannelId: thread.channel,
                   type: THREAD_TYPE.ORIGINAL_MESSAGE,
                 },
                 true
@@ -115,9 +123,11 @@ router.post("/", async (ctx, next) => {
         offtopicMessageId = header.ts;
       }
 
+      logger.backend({ offtopicMessageId, offtopicChannelId });
+
       const otlink = await web.chat.getPermalink({
-        channel: offtopicMessageId,
-        message_ts: offtopicChannelId,
+        channel: offtopicChannelId,
+        message_ts: offtopicMessageId,
       });
 
       await web.chat
