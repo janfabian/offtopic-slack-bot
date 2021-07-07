@@ -1,5 +1,5 @@
-jest.mock("../lib/slack");
-const slackLib = require("../lib/slack");
+jest.mock("../../lib/slack");
+const slackLib = require("../../lib/slack");
 
 const nock = require("nock");
 const request = require("supertest");

@@ -4,10 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "dotenv -e ../../config/.backend.env.local.test -e ../../config/.backend.env.test -- node --no-warnings --experimental-vm-modules ../../node_modules/.bin/jest --runInBand"
   },
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/util-dynamodb": "^3.20.0",
+    "ramda": "^0.27.1"
+  },
   "devDependencies": {
     "@types/jest": "26.0.24",
     "dotenv-cli": "4.0.0",

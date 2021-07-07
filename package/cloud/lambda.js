@@ -87,8 +87,8 @@ const onInstallation = new aws.lambda.Function(
     handler: "package/lambda/on-installation.handler",
     runtime: "nodejs14.x",
     role: lambdaRole.arn,
-    timeout: 10,
-    memorySize: 128,
+    timeout: 60,
+    memorySize: 256,
     environment: {
       variables: {
         ...environment,

@@ -12,11 +12,11 @@ const {
   BLOCK_IDS,
   VIEWS,
 } = require("../lib/interactivity");
-const { createThread } = require("../lib/slack");
 const util = require("util");
 const { record } = require("../../lib/nock");
 const { addTimestamps } = require("../../lib/dynamodb");
 const { THREAD_TYPE } = require("../lib/constants");
+const { createThread } = require("../../lib/slack");
 const web = new WebClient(process.env.SLACK_TOKEN);
 
 router.post("/", async (ctx, next) => {
