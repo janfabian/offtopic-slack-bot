@@ -25,7 +25,7 @@
   "dependencies": {
     "@material-ui/core": "4.12.1",
     "preact": "10.5.14",
-    "preact-helmet": "^4.0.0-alpha-3",
+    "preact-helmet": "4.0.0-alpha-3",
     "preact-render-to-string": "5.1.19",
     "preact-router": "3.2.1"
   }
