@@ -1,11 +1,25 @@
 import { h } from "preact";
-import style from "./style.css";
+import { Container, makeStyles, Typography } from "@material-ui/core";
 
-const Home = () => (
-  <div class={style.home}>
-    <h1>Home</h1>
-    <p>This is the Home.</p>
-  </div>
-);
+const useClasses = makeStyles({
+  root: {
+    marginTop: "30vh",
+    textAlign: "center",
+  },
+});
+
+const Home = () => {
+  const classes = useClasses();
+
+  return (
+    <div>
+      <Container classes={{ root: classes.root }}>
+        <Typography variant="h3" component="h1">
+          Offtopic slack app
+        </Typography>
+      </Container>
+    </div>
+  );
+};
 
 export default Home;
