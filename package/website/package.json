@@ -1,0 +1,30 @@
+{
+  "private": true,
+  "name": "website",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "build": "npx preact-cli build",
+    "serve": "sirv build --port 8080 --cors --single",
+    "dev": "npx preact-cli watch"
+  },
+  "devDependencies": {
+    "enzyme": "3.10.0",
+    "enzyme-adapter-preact-pure": "3.11.0",
+    "eslint": "7.30.0",
+    "eslint-config-preact": "1.1.4",
+    "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-jest": "24.3.6",
+    "eslint-plugin-prettier": "3.4.0",
+    "eslint-plugin-sonarjs": "0.9.1",
+    "jest": "27.0.6",
+    "jest-preset-preact": "4.0.3",
+    "preact-cli": "3.2.2",
+    "sirv-cli": "1.0.12"
+  },
+  "dependencies": {
+    "preact": "10.5.14",
+    "preact-render-to-string": "5.1.19",
+    "preact-router": "3.2.1"
+  }
+}
