@@ -1,9 +1,11 @@
 encryptionsalt: v1:J5QEINyO5Hs=:v1:7JiSaGKLYApE4i62:cQX7RuuNRv4v9p7H2X/kmAjw3YfIRQ==
 config:
   aws:region: eu-central-1
-  offtopic-slack-bot:SLACK_TOKEN:
+  backend:SLACK_TOKEN:
     secure: v1:S0Y/jXC8X2pRpNiw:PG5VvZp+BSJmO79zHOWjrfdqOo/HakfBCpo3q3aEpw8x+4SyyQ4v4lMaAUnVtFtnH7Q3pGiKuU8s8qJ2gCNtP8K0ftAeqEGoUQ==
-  offtopic-slack-bot:env_files:
+  pulumi:env_files:
     - ../../config/.backend.env.dev
-  offtopic-slack-bot:ROUTE53_ZONE_NAME: janfabian.cz
-  offtopic-slack-bot:ROUTE53_DOMAIN: offtopic-bot.dev.janfabian.cz
+  backend:ROUTE53_ZONE_NAME: janfabian.cz
+  backend:API_DOMAIN: offtopic-bot.api.dev.janfabian.cz
+  website:ROUTE53_ZONE_NAME: janfabian.cz
+  website:API_DOMAIN: offtopic-bot.dev.janfabian.cz

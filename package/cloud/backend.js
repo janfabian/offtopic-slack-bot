@@ -4,7 +4,7 @@ const aws = require("@pulumi/aws");
 const awsx = require("@pulumi/awsx");
 const { apiBackend } = require("./lambda");
 
-const config = new pulumi.Config();
+const backendConfig = new pulumi.Config("backend");
 
 const backendPackageName = "offtopic-slack-bot--package-backend";
 
@@ -24,14 +24,16 @@ const api = new awsx.apigateway.API(backendPackageName, {
 });
 
 const webDnsZone = new aws.route53.getZone({
-  name: config.require("ROUTE53_ZONE_NAME"),
+  name: backendConfig.require("ROUTE53_ZONE_NAME"),
 });
 
-const domain = config.require("ROUTE53_DOMAIN");
+const domain = backendConfig.require("API_DOMAIN");
 
-const awsUsEast1 = new aws.Provider("usEast1", { region: "us-east-1" });
+const awsUsEast1 = new aws.Provider(backendPackageName + "usEast1", {
+  region: "us-east-1",
+});
 const sslCert = new aws.acm.Certificate(
-  "sslCert",
+  backendPackageName + "-sslCert",
   {
     domainName: domain,
     validationMethod: "DNS",
@@ -40,7 +42,7 @@ const sslCert = new aws.acm.Certificate(
 );
 
 const sslCertValidationRecord = new aws.route53.Record(
-  "sslCertValidationRecord",
+  backendPackageName + "-sslCertValidationRecord",
   {
     zoneId: webDnsZone.then((zone) => zone.id),
     name: sslCert.domainValidationOptions[0].resourceRecordName,
@@ -51,7 +53,7 @@ const sslCertValidationRecord = new aws.route53.Record(
 );
 
 const sslCertValidationIssued = new aws.acm.CertificateValidation(
-  "sslCertValidationIssued",
+  backendPackageName + "-sslCertValidationIssued",
   {
     certificateArn: sslCert.arn,
     validationRecordFqdns: [sslCertValidationRecord.fqdn],
@@ -59,14 +61,14 @@ const sslCertValidationIssued = new aws.acm.CertificateValidation(
   { provider: awsUsEast1 }
 );
 
-const webDomain = new aws.apigateway.DomainName("webCdn", {
+const webDomain = new aws.apigateway.DomainName(backendPackageName + "webCdn", {
   certificateArn: sslCertValidationIssued.certificateArn,
   domainName: domain,
 });
 
 // eslint-disable-next-line no-unused-vars
 const webDomainMapping = new aws.apigateway.BasePathMapping(
-  "webDomainMapping",
+  backendPackageName + "webDomainMapping",
   {
     restApi: api.restAPI,
     stageName: api.stage.stageName,
@@ -76,7 +78,7 @@ const webDomainMapping = new aws.apigateway.BasePathMapping(
 
 // eslint-disable-next-line no-unused-vars
 const webDnsRecord = new aws.route53.Record(
-  "webDnsRecord",
+  backendPackageName + "webDnsRecord",
   {
     name: webDomain.domainName,
     type: "A",

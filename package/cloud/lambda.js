@@ -4,9 +4,10 @@ const aws = require("@pulumi/aws");
 const dotenv = require("dotenv");
 const { DYNAMODB_TABLES } = require("./dynamo");
 
-const config = new pulumi.Config();
-const names = JSON.parse(config.require("env_files")) || [];
-const SLACK_TOKEN = config.require("SLACK_TOKEN");
+const backendConfig = new pulumi.Config("backend");
+const projectConfig = new pulumi.Config("pulumi");
+const names = JSON.parse(projectConfig.require("env_files")) || [];
+const SLACK_TOKEN = backendConfig.require("SLACK_TOKEN");
 
 const environment = names.reduce(
   (res, path) => ({
