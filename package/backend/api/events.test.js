@@ -10,7 +10,7 @@ test("verification", async () => {
   });
 });
 
-test("message", async () => {
+test.skip("message", async () => {
   const response = await request(app.callback()).post("/events").send(message);
   expect(response.status).toBe(200);
 });
