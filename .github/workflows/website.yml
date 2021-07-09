@@ -10,7 +10,7 @@ on:
 jobs:
   test:
     concurrency:
-      group: ${{ github.head_ref }}
+      group: ${{ github.ref }}
       cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
@@ -30,7 +30,7 @@ jobs:
 
   build:
     concurrency:
-      group: ${{ github.head_ref }}
+      group: ${{ github.ref }}
       cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
