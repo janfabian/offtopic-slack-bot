@@ -15,11 +15,6 @@ const contentBucket = new aws.s3.Bucket(websitePackageName + "-contentBucket", {
   },
 });
 
-const logsBucket = new aws.s3.Bucket("requestLogs", {
-  bucket: `${domain}-logs`,
-  acl: "private",
-});
-
 const tenMinutes = 60 * 10;
 
 const awsUsEast1 = new aws.Provider(websitePackageName + "usEast1", {
@@ -149,12 +144,6 @@ const distributionArgs = {
     acmCertificateArn: certificateArn, // Per AWS, ACM certificate must be in the us-east-1 region.
     sslSupportMethod: "sni-only",
   },
-
-  loggingConfig: {
-    bucket: logsBucket.bucketDomainName,
-    includeCookies: false,
-    prefix: `${domain}/`,
-  },
 };
 
 const distribution = new aws.cloudfront.Distribution(
@@ -190,3 +179,4 @@ new aws.route53.Record(websitePackageName + `-${domain}-www-alias`, {
 
 exports.cloudFrontId = distribution.id;
 exports.url = `https://${domain}/`;
+exports.bucketUri = contentBucket.bucket;
