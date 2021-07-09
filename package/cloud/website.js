@@ -11,9 +11,30 @@ const contentBucket = new aws.s3.Bucket(websitePackageName + "-contentBucket", {
   acl: "public-read",
   website: {
     indexDocument: "index.html",
-    errorDocument: "404.html",
   },
 });
+
+// eslint-disable-next-line no-unused-vars
+const contentBucketPolicy = new aws.s3.BucketPolicy(
+  websitePackageName + "-contentBucketPolicy",
+  {
+    bucket: contentBucket.id,
+    policy: contentBucket.arn.apply((bucketArn) =>
+      JSON.stringify({
+        Version: "2012-10-17",
+        Statement: [
+          {
+            Sid: "PublicReadGetObject",
+            Effect: "Allow",
+            Principal: "*",
+            Action: ["s3:GetObject"],
+            Resource: [bucketArn + "/*"],
+          },
+        ],
+      })
+    ),
+  }
+);
 
 const tenMinutes = 60 * 10;
 
@@ -131,7 +152,7 @@ const distributionArgs = {
   // You can customize error responses. When CloudFront receives an error from the origin (e.g. S3 or some other
   // web service) it can return a different error code, and return the response for a different resource.
   customErrorResponses: [
-    { errorCode: 404, responseCode: 404, responsePagePath: "/404.html" },
+    { errorCode: 404, responseCode: 200, responsePagePath: "/index.html" },
   ],
 
   restrictions: {
@@ -179,4 +200,4 @@ new aws.route53.Record(websitePackageName + `-${domain}-www-alias`, {
 
 exports.cloudFrontId = distribution.id;
 exports.url = `https://${domain}/`;
-exports.bucketUri = contentBucket.bucket;
+exports.bucketUri = contentBucket.bucket.apply((v) => "s3://" + v);
