@@ -114,16 +114,14 @@ jobs:
           docker load < .github/artifacts/docker/offtopic-slack-bot-lambda.tar
           docker load < .github/artifacts/docker/offtopic-slack-bot-backend.tar
 
-      - name: Get Pulumi stack output properties
+      - name: Create or update stack resources
         run: |
           pulumi login s3://pulumi.janfabian.cz
           pulumi stack select development
+          npm run cloud
         working-directory: package/cloud
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: eu-central-1
           PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_CONFIG_PASSPHRASE }}
-
-      - name: Create or update stack resources
-        run: npm run cloud
