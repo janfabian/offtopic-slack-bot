@@ -70,6 +70,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: website-offtopic-slack-bot
+          path: ./package/website/build
       - name: Install Pulumi CLI
         uses: pulumi/setup-pulumi@v2
       - name: Get Pulumi stack output properties
@@ -85,7 +86,7 @@ jobs:
           AWS_REGION: eu-central-1
           PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_CONFIG_PASSPHRASE }}
       - run: |
-          aws s3 sync package/website/build ${{ env.s3_bucket }} --delete
+          aws s3 sync ./package/website/build ${{ env.s3_bucket }} --delete
       - run: |
           aws cloudfront create-invalidation \
             --distribution-id ${{ env.cloudfront_id}} \

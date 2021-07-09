@@ -21,7 +21,9 @@ jobs:
         run: docker run -p 8000:8000 amazon/dynamodb-local -jar DynamoDBLocal.jar -sharedDb -optimizeDbBeforeStartup -dbPath ./ &
       - uses: actions/cache@v2
         with:
-          path: ~/.npm
+          path: |
+            **/node_modules
+            ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
@@ -85,7 +87,9 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - uses: actions/cache@v2
         with:
-          path: ~/.npm
+          path: |
+            **/node_modules
+            ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
@@ -98,10 +102,17 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: docker-offtopic-slack-bot-backend
+          path: .github/artifacts/docker/offtopic-slack-bot-backend.tar
 
       - uses: actions/download-artifact@v2
         with:
           name: docker-offtopic-slack-bot-lambda
+          path: .github/artifacts/docker/offtopic-slack-bot-lambda.tar
+
+      - name: Docker load
+        run: |
+          docker load < .github/artifacts/docker/offtopic-slack-bot-lambda.tar
+          docker load < .github/artifacts/docker/offtopic-slack-bot-backend.tar
 
       - name: Get Pulumi stack output properties
         run: |
