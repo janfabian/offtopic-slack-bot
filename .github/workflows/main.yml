@@ -6,9 +6,42 @@ on:
     branches: [main]
 
 jobs:
-  build_and_test:
+  build-backend:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build Docker image
+        run: |
+          docker build -t offtopic-slack-bot-backend -f ./docker/backend.Dockerfile -q ./
+          mkdir -p .github/artifacts/docker
+          docker save offtopic-slack-bot-backend > .github/artifacts/docker/offtopic-slack-bot-backend.tar
 
+      - name: Temporarily save Docker image
+        uses: actions/upload-artifact@v2
+        with:
+          name: docker-offtopic-slack-bot-backend
+          path: .github/artifacts/docker/offtopic-slack-bot-backend.tar
+          retention-days: 1
+
+  build-lambda:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build Docker image
+        run: |
+          docker build -t offtopic-slack-bot-lambda -f ./docker/lambda.Dockerfile -q ./
+          mkdir -p .github/artifacts/docker
+          docker save offtopic-slack-bot-lambda > .github/artifacts/docker/offtopic-slack-bot-lambda.tar
+
+      - name: Temporarily save Docker image
+        uses: actions/upload-artifact@v2
+        with:
+          name: docker-offtopic-slack-bot-lambda
+          path: .github/artifacts/docker/offtopic-slack-bot-lambda.tar
+          retention-days: 1
+
+  test:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
