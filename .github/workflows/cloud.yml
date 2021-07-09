@@ -107,7 +107,6 @@ jobs:
 
       - name: Docker load
         run: |
-          ls -lah .github/artifacts/docker
           docker load < .github/artifacts/docker/offtopic-slack-bot-lambda.tar
           docker load < .github/artifacts/docker/offtopic-slack-bot-backend.tar
 
