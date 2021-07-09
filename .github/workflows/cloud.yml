@@ -112,10 +112,9 @@ jobs:
 
       - name: Create or update stack resources
         run: |
-          pulumi login s3://pulumi.janfabian.cz
-          pulumi stack select development
-          bash ./pulumi/update.sh
-        working-directory: package/cloud
+          pulumi login -C package/cloud s3://pulumi.janfabian.cz
+          pulumi stack -C package/cloud select development
+          npm run cloud
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
