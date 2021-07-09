@@ -1,0 +1,50 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: ["Test", "Build"]
+    branches: [main]
+    types:
+      - completed
+
+jobs:
+  pulumi:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org/
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - run: npm ci
+      - name: Install Pulumi CLI
+        uses: pulumi/setup-pulumi@v2
+      - name: Retrieve saved Docker image
+        uses: actions/download-artifact@v2
+        with:
+          name: docker-offtopic-slack-bot-lambda
+          path: .github/artifacts/docker/offtopic-slack-bot-lambda.tar
+      - name: Retrieve saved Docker image
+        uses: actions/download-artifact@v2
+        with:
+          name: docker-offtopic-slack-bot-backend
+          path: .github/artifacts/docker/offtopic-slack-bot-backend.tar
+      - name: Pulumi login
+        uses: pulumi/actions@v3
+        with:
+          command: login
+          cloud-url: s3://pulumi.janfabian.cz
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: eu-central-1
+          PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_CONFIG_PASSPHRASE }}
+      - name: Create or update stack resources
+        run: npm run cloud
