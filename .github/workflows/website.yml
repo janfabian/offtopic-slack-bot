@@ -2,13 +2,16 @@ name: Build and deploy website
 
 on:
   push:
-    paths:
-      - package/website/**
+  # paths:
+  #   - package/website/**
   pull_request:
     branches: [main]
 
 jobs:
   test:
+    concurrency:
+      group: ${{ github.head_ref }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -26,6 +29,9 @@ jobs:
       - run: npm test -w website
 
   build:
+    concurrency:
+      group: ${{ github.head_ref }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -48,6 +54,8 @@ jobs:
           retention-days: 1
 
   deploy:
+    concurrency:
+      group: deploy-website-development
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     needs: ["test", "build"]

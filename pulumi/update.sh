@@ -11,7 +11,7 @@ rm -rf package/cloud/package.lambda
 tar -xzf package/cloud/package.lambda.tar.gz -C package/cloud/ --overwrite --one-top-level
 
 # Update stack
-pulumi -C package/cloud/ up -f
+pulumi -C package/cloud/ up -f --yes
 
 # Clean
 rm -rf package/cloud/package.backend package/cloud/package.backend.tar.gz
