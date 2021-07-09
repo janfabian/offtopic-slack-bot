@@ -50,7 +50,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    needs: ["test", "deploy"]
+    needs: ["test", "build"]
     steps:
       - uses: actions/checkout@v2
       - name: Configure AWS credentials
