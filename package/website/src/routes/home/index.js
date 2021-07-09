@@ -15,7 +15,7 @@ const Home = () => {
     <div>
       <Container classes={{ root: classes.root }}>
         <Typography variant="h3" component="h1">
-          Offtopic slack app
+          Offtopic slack bot
         </Typography>
       </Container>
     </div>
