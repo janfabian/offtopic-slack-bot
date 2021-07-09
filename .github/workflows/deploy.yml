@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   workflow_run:
-    workflows: ["Test", "Build"]
+    workflows: ["Test and Build"]
     branches: [main]
     types:
       - completed
@@ -23,19 +23,17 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
+
       - run: npm ci
+
       - name: Install Pulumi CLI
         uses: pulumi/setup-pulumi@v2
-      - name: Retrieve saved Docker image
-        uses: actions/download-artifact@v2
+
+      - name: Retrieve saved artifacts from Test and Build
+        uses: dawidd6/action-download-artifact@v2
         with:
-          name: docker-offtopic-slack-bot-lambda
-          path: .github/artifacts/docker/offtopic-slack-bot-lambda.tar
-      - name: Retrieve saved Docker image
-        uses: actions/download-artifact@v2
-        with:
-          name: docker-offtopic-slack-bot-backend
-          path: .github/artifacts/docker/offtopic-slack-bot-backend.tar
+          workflow: ${{ github.event.workflow_run.workflow_id }}
+
       - name: Pulumi login
         uses: pulumi/actions@v3
         with:
