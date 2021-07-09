@@ -21,9 +21,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - uses: actions/cache@v2
         with:
-          path: |
-            **/node_modules
-            ~/.npm
+          path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
@@ -43,9 +41,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - uses: actions/cache@v2
         with:
-          path: |
-            **/node_modules
-            ~/.npm
+          path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-

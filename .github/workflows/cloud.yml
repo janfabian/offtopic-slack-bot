@@ -21,9 +21,7 @@ jobs:
         run: docker run -p 8000:8000 amazon/dynamodb-local -jar DynamoDBLocal.jar -sharedDb -optimizeDbBeforeStartup -dbPath ./ &
       - uses: actions/cache@v2
         with:
-          path: |
-            **/node_modules
-            ~/.npm
+          path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
@@ -87,9 +85,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - uses: actions/cache@v2
         with:
-          path: |
-            **/node_modules
-            ~/.npm
+          path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
@@ -111,6 +107,7 @@ jobs:
 
       - name: Docker load
         run: |
+          ls -lah .github/artifacts/docker
           docker load < .github/artifacts/docker/offtopic-slack-bot-lambda.tar
           docker load < .github/artifacts/docker/offtopic-slack-bot-backend.tar
 
