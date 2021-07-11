@@ -6,8 +6,8 @@
   "scripts": {
     "build": "npx preact-cli build --preload --no-sw --no-esm --no-prerender",
     "serve": "sirv build --port 8080 --cors --single",
-    "dev": "npx preact-cli watch",
-    "dev:https": "npx preact-cli watch --key local.key --cert local.crt --https",
+    "dev": "npx preact-cli watch --no-sw --no-esm --no-prerender",
+    "dev:https": "npm run dev -- --key local.key --cert local.crt --https",
     "test": "echo \"Error: no test specified\" && exit 0"
   },
   "devDependencies": {
@@ -26,6 +26,8 @@
   },
   "dependencies": {
     "@material-ui/core": "4.12.1",
+    "@material-ui/icons": "^4.11.2",
+    "clsx": "^1.1.1",
     "preact": "10.5.14",
     "preact-helmet": "4.0.0-alpha-3",
     "preact-render-to-string": "5.1.19",

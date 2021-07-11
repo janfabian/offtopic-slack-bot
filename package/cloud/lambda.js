@@ -3,6 +3,7 @@ const pulumi = require("@pulumi/pulumi");
 const aws = require("@pulumi/aws");
 const dotenv = require("dotenv");
 const { DYNAMODB_TABLES } = require("./dynamo");
+const { url: frontendUrl } = require("./website");
 
 const backendConfig = new pulumi.Config("backend");
 const projectConfig = new pulumi.Config("pulumi");
@@ -121,6 +122,7 @@ const apiBackend = new aws.lambda.Function(lambdaPackageName + "-apiBackend", {
       ...environment,
       SLACK_TOKEN,
       ...dynamoTableNames,
+      FRONTEND_URL: frontendUrl,
       NODE_ENV: "production",
     },
   },
