@@ -10,6 +10,10 @@ let theme = createTheme({
     primary: {
       main: "#f4511e",
     },
+    background: {
+      default: "#fafafa",
+      paper: "#fafafa",
+    },
   },
   typography: {
     fontSize: 12,
