@@ -40,7 +40,7 @@ const AppBar = () => {
 
   return (
     <Fragment>
-      <Slide appear={false} direction="down" in={!trigger}>
+      <Slide appear={false} direction="down" in={!trigger || isXs}>
         <AppBarMaterial
           classes={{ root: classes.appBar }}
           elevation={0}
