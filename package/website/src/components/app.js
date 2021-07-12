@@ -15,17 +15,6 @@ const App = () => (
     <Helmet title="Offtopic slack app" />
     <Theme>
       <AppBar />
-      {/* <a>
-        <img
-          alt="Add to Slack"
-          src="https://platform.slack-edge.com/img/add_to_slack.png"
-          width="100"
-          srcset="
-            https://platform.slack-edge.com/img/add_to_slack.png    1x,
-            https://platform.slack-edge.com/img/add_to_slack@2x.png 2x
-          "
-        />
-      </a> */}
       <Router>
         <Home path="/" />
         <NotFound default />

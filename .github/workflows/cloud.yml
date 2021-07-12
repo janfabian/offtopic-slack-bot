@@ -1,4 +1,4 @@
-name: Test and deploy cloud
+name: Cloud
 
 on:
   push:
@@ -71,7 +71,7 @@ jobs:
           path: .github/artifacts/docker/offtopic-slack-bot-lambda.tar
           retention-days: 1
 
-  deploy:
+  deploy-development:
     concurrency:
       group: deploy-cloud-development
     runs-on: ubuntu-latest
@@ -114,6 +114,58 @@ jobs:
         run: |
           pulumi login -C package/cloud s3://pulumi.janfabian.cz
           pulumi stack -C package/cloud select development
+          npm run cloud
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: eu-central-1
+          PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_CONFIG_PASSPHRASE }}
+
+  deploy-production:
+    concurrency:
+      group: deploy-cloud-production
+    runs-on: ubuntu-latest
+    needs: ["test", "build-backend", "build-lambda"]
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org/
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - run: npm ci
+
+      - name: Install Pulumi CLI
+        uses: pulumi/setup-pulumi@v2
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: docker-offtopic-slack-bot-backend
+          path: .github/artifacts/docker
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: docker-offtopic-slack-bot-lambda
+          path: .github/artifacts/docker
+
+      - name: Docker load
+        run: |
+          docker load < .github/artifacts/docker/offtopic-slack-bot-lambda.tar
+          docker load < .github/artifacts/docker/offtopic-slack-bot-backend.tar
+
+      - name: Create or update stack resources
+        run: |
+          pulumi login -C package/cloud s3://pulumi.janfabian.cz
+          pulumi stack -C package/cloud select production
           npm run cloud
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
