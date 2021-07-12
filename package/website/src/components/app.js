@@ -8,6 +8,8 @@ import NotFound from "../routes/not-found";
 import Theme from "./theme";
 import { CssBaseline } from "@material-ui/core";
 import AppBar from "./app-bar";
+import Install from "../routes/install";
+import SnackBar from "./snackbar";
 
 const App = () => (
   <div id="app">
@@ -17,8 +19,10 @@ const App = () => (
       <AppBar />
       <Router>
         <Home path="/" />
+        <Install path="/install/:remaining_path*" />
         <NotFound default />
       </Router>
+      <SnackBar />
     </Theme>
   </div>
 );

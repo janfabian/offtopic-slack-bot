@@ -7,11 +7,9 @@ import {
   makeStyles,
   Slide,
   Toolbar,
-  Typography,
   useMediaQuery,
   useScrollTrigger,
 } from "@material-ui/core";
-
 import SlackIcon from "../image/slack.svg";
 
 const useClasses = makeStyles((theme) => ({
@@ -23,6 +21,9 @@ const useClasses = makeStyles((theme) => ({
   buttons: {
     "& button": {
       marginRight: theme.spacing(2),
+      "&:last-child": {
+        marginRight: 0,
+      },
       "& svg": {
         fill: "white",
       },
@@ -53,6 +54,12 @@ const AppBar = () => {
                 startIcon={<SlackIcon />}
                 color="primary"
                 variant="contained"
+                onClick={() => {
+                  window.open(
+                    "https://slack.com/oauth/v2/authorize?client_id=2098073289365.2099442449701&scope=app_mentions:read,channels:history,channels:manage,chat:write,chat:write.public,commands,im:write,channels:join,channels:read&user_scope=",
+                    "_blank"
+                  );
+                }}
                 disableElevation
               >
                 Add to Slack
