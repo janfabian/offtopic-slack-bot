@@ -6,6 +6,8 @@ import Success from "./success";
 import { eventTarget, SNACKBAR_EVENT } from "../../components/snackbar";
 import { useTranslation } from "react-i18next";
 
+console.log(process.env.PREACT_PUBLIC_BACKEND_URL);
+
 const useClasses = makeStyles({
   root: {
     marginTop: "30vh",
