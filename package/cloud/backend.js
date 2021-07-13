@@ -94,4 +94,5 @@ const webDnsRecord = new aws.route53.Record(
   { dependsOn: sslCertValidationIssued }
 );
 
-module.exports.url = api.url;
+module.exports.url = "https://" + domain;
+module.exports.apiGatewayUrl = api.url;
