@@ -13,23 +13,36 @@ const useClasses = makeStyles({
   },
 });
 
-const Install = ({ code }) => {
+const Install = ({ code, error }) => {
   const classes = useClasses();
   const { t } = useTranslation("Install");
 
   useLayoutEffect(() => {
-    if (!code) {
+    // no error or code from slack service
+    // -> redirect to index
+    if (!error && !code) {
+      route("/");
+      return;
+    }
+
+    if (error) {
       eventTarget.dispatchEvent(
         new CustomEvent(SNACKBAR_EVENT, {
           detail: {
-            text: t("The installation url is missing code parameter"),
+            text: t(`Errors.Slack:${error}`),
             severity: "error",
           },
         })
       );
-      route("/");
+      return;
     }
-  });
+
+    if (code) {
+      const url = new URL("/install", process.env.PREACT_PUBLIC_BACKEND_URL);
+      url.searchParams.set("code", code);
+      fetch(url);
+    }
+  }, [code, error, t]);
 
   return (
     <div>

@@ -43,27 +43,22 @@ const lambdaPolicy = new aws.iam.Policy(lambdaPackageName, {
       Object.values(DYNAMODB_TABLES).map((table) => table.arn),
     ])
     .apply(([streamArns, tableArns]) => [streamArns.filter(Boolean), tableArns])
-    .apply(
-      ([streamArns, tableArns]) => `{
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Effect": "Allow",
-        "Action": [
-          "dynamodb:*"
+    .apply(([streamArns, tableArns]) =>
+      JSON.stringify({
+        Version: "2012-10-17",
+        Statement: [
+          {
+            Effect: "Allow",
+            Action: ["dynamodb:*"],
+            Resource: tableArns,
+          },
+          {
+            Effect: "Allow",
+            Action: ["dynamodb:*"],
+            Resource: streamArns,
+          },
         ],
-        "Resource": ${JSON.stringify(tableArns)}
-      },
-      {
-        "Effect": "Allow",
-        "Action": [
-          "dynamodb:*"
-        ],
-        "Resource": ${JSON.stringify(streamArns)}
-      }
-    ]
-    }
-`
+      })
     ),
 });
 
@@ -122,7 +117,7 @@ const apiBackend = new aws.lambda.Function(lambdaPackageName + "-apiBackend", {
       ...environment,
       SLACK_TOKEN,
       ...dynamoTableNames,
-      FRONTEND_URL: frontendUrl,
+      PREACT_PUBLIC_FRONTEND_URL: frontendUrl,
       NODE_ENV: "production",
     },
   },

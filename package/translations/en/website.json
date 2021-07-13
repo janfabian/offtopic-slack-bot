@@ -1,5 +1,8 @@
 {
     "Install": {
         "The installation url is missing code parameter": "The installation url is missing code parameter"
+    },
+    "Errors.Slack": {
+        "access_denied": "Access to Slack workspace denied"
     }
 }

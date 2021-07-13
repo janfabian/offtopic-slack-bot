@@ -14,7 +14,7 @@ const router = new Router();
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: process.env.PREACT_PUBLIC_FRONTEND_URL,
   })
 );
 

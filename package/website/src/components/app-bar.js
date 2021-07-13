@@ -11,6 +11,10 @@ import {
   useScrollTrigger,
 } from "@material-ui/core";
 import SlackIcon from "../image/slack.svg";
+import { useCallback } from "preact/hooks";
+
+const SLACK_AUTH_URL =
+  "https://slack.com/oauth/v2/authorize?client_id=2098073289365.2099442449701&scope=app_mentions:read,channels:history,channels:manage,chat:write,chat:write.public,commands,im:write,channels:join,channels:read&user_scope=";
 
 const useClasses = makeStyles((theme) => ({
   appBar: {
@@ -39,6 +43,15 @@ const AppBar = () => {
     noSsr: true,
   });
 
+  const slackAuthRedirect = useCallback(() => {
+    let url = SLACK_AUTH_URL;
+
+    if (process.env.NODE_ENV === "development") {
+      url += `&redirect_uri=${process.env.PREACT_PUBLIC_FRONTEND_URL}/install`;
+    }
+    window.open(url, "_blank");
+  }, []);
+
   return (
     <Fragment>
       <Slide appear={false} direction="down" in={!trigger || isXs}>
@@ -54,12 +67,7 @@ const AppBar = () => {
                 startIcon={<SlackIcon />}
                 color="primary"
                 variant="contained"
-                onClick={() => {
-                  window.open(
-                    "https://slack.com/oauth/v2/authorize?client_id=2098073289365.2099442449701&scope=app_mentions:read,channels:history,channels:manage,chat:write,chat:write.public,commands,im:write,channels:join,channels:read&user_scope=",
-                    "_blank"
-                  );
-                }}
+                onClick={slackAuthRedirect}
                 disableElevation
               >
                 Add to Slack
