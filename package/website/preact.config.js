@@ -2,6 +2,8 @@ import preactCliSvgLoader from "preact-cli-svg-loader";
 
 const PREACT_PUBLIC_VAR = /^PREACT_PUBLIC_/;
 
+console.log(Object.keys(process.env));
+
 export default function (config, env, helpers) {
   preactCliSvgLoader(config, helpers);
 
