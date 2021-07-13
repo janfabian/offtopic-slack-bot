@@ -16,7 +16,7 @@ router.get("/", async (ctx, next) => {
 
   try {
     r = await web.oauth.v2.access({
-      client_id: process.env.SLACK_CLIENT_ID,
+      client_id: process.env.PREACT_PUBLIC_SLACK_CLIENT_ID,
       client_secret: process.env.SLACK_CLIENT_SECRET,
       code: code,
     });
