@@ -3,7 +3,7 @@ name: Website
 on:
   push:
     paths:
-      - ./github/workflows/website.yml
+      - .github/workflows/website.yml
       - package/cloud/**
       - package/website/**
   pull_request:

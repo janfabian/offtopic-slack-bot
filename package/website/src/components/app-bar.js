@@ -13,8 +13,7 @@ import {
 import SlackIcon from "../image/slack.svg";
 import { useCallback } from "preact/hooks";
 
-const SLACK_AUTH_URL =
-  "https://slack.com/oauth/v2/authorize?client_id=2098073289365.2099442449701&scope=app_mentions:read,channels:history,channels:manage,chat:write,chat:write.public,commands,im:write,channels:join,channels:read&user_scope=";
+const SLACK_AUTH_URL = `https://slack.com/oauth/v2/authorize?client_id=${process.env.PREACT_PUBLIC_SLACK_CLIENT_ID}&scope=app_mentions:read,channels:history,channels:manage,chat:write,chat:write.public,commands,im:write,channels:join,channels:read&user_scope=`;
 
 const useClasses = makeStyles((theme) => ({
   appBar: {
