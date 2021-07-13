@@ -8,7 +8,7 @@ const { url: frontendUrl } = require("./website");
 const backendConfig = new pulumi.Config("backend");
 const projectConfig = new pulumi.Config("pulumi");
 const names = JSON.parse(projectConfig.require("env_files")) || [];
-const SLACK_TOKEN = backendConfig.require("SLACK_TOKEN");
+const SLACK_CLIENT_SECRET = backendConfig.require("SLACK_CLIENT_SECRET");
 
 const environment = names.reduce(
   (res, path) => ({
@@ -89,7 +89,7 @@ const onInstallation = new aws.lambda.Function(
     environment: {
       variables: {
         ...environment,
-        SLACK_TOKEN,
+        SLACK_CLIENT_SECRET: SLACK_CLIENT_SECRET,
         ...dynamoTableNames,
         NODE_ENV: "production",
       },
@@ -115,7 +115,7 @@ const apiBackend = new aws.lambda.Function(lambdaPackageName + "-apiBackend", {
   environment: {
     variables: {
       ...environment,
-      SLACK_TOKEN,
+      SLACK_CLIENT_SECRET: SLACK_CLIENT_SECRET,
       ...dynamoTableNames,
       PREACT_PUBLIC_FRONTEND_URL: frontendUrl,
       NODE_ENV: "production",

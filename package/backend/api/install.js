@@ -4,7 +4,7 @@ const createHttpError = require("http-errors");
 const { documentClient } = require("../../database/dynamo");
 const { addTimestamps } = require("../../lib/dynamodb");
 const router = new Router();
-const web = new WebClient(process.env.SLACK_TOKEN);
+const web = new WebClient();
 
 router.get("/", async (ctx, next) => {
   const code = new URLSearchParams(ctx.search).get("code");

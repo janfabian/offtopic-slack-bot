@@ -2,7 +2,7 @@ const { WebClient } = require("@slack/web-api");
 
 module.exports.DEFAULT_APP_CONVERSATION_NAME = "offtopic-app-thread-storage";
 
-module.exports.getClient = (token = process.env.SLACK_TOKEN) => {
+module.exports.getClient = (token) => {
   return new WebClient(token, {
     logLevel: process.env.NODE_ENV === "test" ? "error" : "warn",
   });

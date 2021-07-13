@@ -1,11 +1,10 @@
 encryptionsalt: v1:J5QEINyO5Hs=:v1:7JiSaGKLYApE4i62:cQX7RuuNRv4v9p7H2X/kmAjw3YfIRQ==
 config:
   aws:region: eu-central-1
-  backend:SLACK_TOKEN:
-    secure: v1:S0Y/jXC8X2pRpNiw:PG5VvZp+BSJmO79zHOWjrfdqOo/HakfBCpo3q3aEpw8x+4SyyQ4v4lMaAUnVtFtnH7Q3pGiKuU8s8qJ2gCNtP8K0ftAeqEGoUQ==
-  pulumi:env_files:
-    - ../../config/.backend.env.production
-  backend:ROUTE53_ZONE_NAME: janfabian.cz
   backend:API_DOMAIN: offtopic-bot.api.janfabian.cz
-  website:ROUTE53_ZONE_NAME: janfabian.cz
+  backend:ROUTE53_ZONE_NAME: janfabian.cz
+  backend:SLACK_CLIENT_SECRET:
+    secure: v1:BzNVWwvQeb7Ml9GT:kE68Lk0AFbEv0hPMXMdpVtK5MwnhQCQd2XZPcNsq253WUzwChNqDvUHb2kjw+kpF
+  pulumi:env_files: [../../config/.backend.env.production]
   website:API_DOMAIN: offtopic-bot.janfabian.cz
+  website:ROUTE53_ZONE_NAME: janfabian.cz
