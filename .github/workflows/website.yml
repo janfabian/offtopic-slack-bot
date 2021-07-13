@@ -53,7 +53,7 @@ jobs:
       - name: Get Pulumi stack output properties
         run: |
           pulumi login s3://pulumi.janfabian.cz
-          pulumi stack select ${{ matrix.node }}
+          pulumi stack select ${{ matrix.environment }}
           echo "api_url=$(pulumi stack output backend | jq '.url')" >> $GITHUB_ENV
           echo "frontend_url=$(pulumi stack output website | jq '.url')" >> $GITHUB_ENV
         working-directory: package/cloud
@@ -63,13 +63,13 @@ jobs:
           AWS_REGION: eu-central-1
           PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_CONFIG_PASSPHRASE }}
       - run: npm ci
-      - run: npm run -w website build:${{ matrix.node }}
+      - run: npm run -w website build:${{ matrix.environment }}
         env:
           PREACT_PUBLIC_BACKEND_URL: ${{ env.api_url }}
           PREACT_PUBLIC_FRONTEND_URL: ${{ env.frontend_url }}
       - uses: actions/upload-artifact@v2
         with:
-          name: website-offtopic-slack-bot-${{ matrix.node }}
+          name: website-offtopic-slack-bot-${{ matrix.environment }}
           path: ./package/website/build
           retention-days: 1
 
