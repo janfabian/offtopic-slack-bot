@@ -16,7 +16,7 @@
     "dotenv-cli": "4.0.0",
     "enzyme": "3.11.0",
     "enzyme-adapter-preact-pure": "3.1.0",
-    "eslint": "7.30.0",
+    "eslint": "7.31.0",
     "eslint-config-preact": "1.1.4",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-jest": "24.3.6",
