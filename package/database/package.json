@@ -17,7 +17,7 @@
     "umzug": "2.3.0"
   },
   "devDependencies": {
-    "aws-sdk": "2.949.0",
+    "aws-sdk": "2.950.0",
     "dotenv-cli": "4.0.0",
     "dynamodb-admin": "4.0.1",
     "sequelize-cli": "6.2.0",
