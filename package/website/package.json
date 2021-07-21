@@ -19,7 +19,7 @@
     "eslint": "7.31.0",
     "eslint-config-preact": "1.1.4",
     "eslint-config-prettier": "8.3.0",
-    "eslint-plugin-jest": "24.3.6",
+    "eslint-plugin-jest": "24.3.7",
     "eslint-plugin-prettier": "3.4.0",
     "eslint-plugin-sonarjs": "0.9.1",
     "jest": "27.0.6",
