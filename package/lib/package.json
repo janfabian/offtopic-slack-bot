@@ -11,7 +11,7 @@
   "dependencies": {
     "@slack/web-api": "^6.2.3",
     "debug": "^4.3.2",
-    "nock": "13.1.1"
+    "nock": "13.1.2"
   },
   "devDependencies": {
     "@types/jest": "27.0.1",
