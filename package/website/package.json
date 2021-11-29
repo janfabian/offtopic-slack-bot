@@ -13,7 +13,7 @@
     "test": "echo \"Error: no test specified\" && exit 0"
   },
   "devDependencies": {
-    "dotenv-cli": "4.0.0",
+    "dotenv-cli": "4.1.1",
     "enzyme": "3.11.0",
     "enzyme-adapter-preact-pure": "3.1.0",
     "eslint": "8.0.1",
